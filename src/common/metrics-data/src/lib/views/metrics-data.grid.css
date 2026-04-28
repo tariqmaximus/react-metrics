@@ -1,0 +1,61 @@
+/* ─── GRID VIEW STYLES ─────────────────────────────────────── */
+
+
+
+.view-grid .grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  width: 100%;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* Responsive Grid */
+@media (max-width: 1024px) {
+  .view-grid .grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--space-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .view-grid {
+    padding: var(--space-sm);
+  }
+
+  .view-grid .grid-container {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .view-grid .metrics-card-header {
+    padding: var(--space-sm);
+    gap: var(--space-sm);
+  }
+
+  .view-grid .grid-card-title h3 {
+    font-size: var(--font-size-base);
+  }
+
+  .view-grid .grid-card-body {
+    padding: var(--space-sm);
+  }
+
+  .view-grid .grid-card-footer {
+    padding: var(--space-sm);
+    flex-direction: column;
+  }
+
+  .view-grid .grid-card-footer .metrics-btn {
+    min-width: auto;
+    width: 100%;
+  }
+}

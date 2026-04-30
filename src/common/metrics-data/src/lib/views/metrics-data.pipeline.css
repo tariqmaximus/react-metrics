@@ -39,12 +39,12 @@
 
 /* Pipeline Header Status Colors */
 .metrics-headers.success,
-.metrics-headers.approved  { color: #28a745;  background-color: rgb(228, 255, 234); }
+.metrics-headers.completed  { color: #28a745;  background-color: rgb(228, 255, 234); }
 .metrics-headers.warning,
 .metrics-headers.pending   { color: #f1a10a;  background-color: rgb(255, 246, 230); }
 .metrics-headers.info,
 .metrics-headers.queued,
-.metrics-headers.processing { color: #17a2b8; background-color: rgb(215, 236, 240); }
+.metrics-headers.inprogress { color: #17a2b8; background-color: rgb(215, 236, 240); }
 .metrics-headers.danger,
 .metrics-headers.failed,
 .metrics-headers.rejected  { color: #dc3545;  background-color: rgb(255, 238, 240); }
@@ -92,4 +92,19 @@
   display: flex;
   align-items: center;
   gap: 12px;
+}
+.pipeline-progress {
+
+  align-items: center;
+  margin: 25px 0;
+  font-size: 12px;
+}
+.pipeline-progress span {
+  position: absolute;
+  right: -20px;
+  top: 0;
+  transform: translate(-50%, -50%);
+  color: white;
+  border-radius: 5px;
+  font-weight: bold;
 }

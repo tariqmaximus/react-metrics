@@ -576,11 +576,11 @@ export default function MetricsData(props) {
         )}
       </div>
       {showFooter && paginated && (
-        <div className="metrics-footer metrics-btn-group align-center" style={{ marginTop: 12 }}>
+        <div className="pagination metrics-btn-group align-right">
           <button className="metrics-btn" type="button" disabled={currentPage <= 1} onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>
             Previous
           </button>
-          <span style={{ padding: '0 12px', alignSelf: 'center' }}>Page {currentPage} / {totalPages}</span>
+          <span className='metrics-btn'>Page {currentPage} / {totalPages}</span>
           <button className="metrics-btn" type="button" disabled={currentPage >= totalPages} onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}>
             Next
           </button>

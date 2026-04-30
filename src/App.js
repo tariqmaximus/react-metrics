@@ -1,6 +1,12 @@
 import './App.css';
 import { MetricsData } from './common/metrics-data/src';
 
+const statusMap = {
+  completed: 'success',
+  inprogress: 'info',
+  pending: 'warning',
+};
+
 const dummyData = [
   {
     mediaTile: 'https://picsum.photos/80?random=1',
@@ -92,17 +98,7 @@ const dummyData = [
     date: '2026-04-03',
     description: 'Launching email marketing campaign.',
   },
-  {
-    mediaTile: 'https://picsum.photos/80?random=11',
-    name: 'Analytics Setup',
-    source: 'Data Team',
-    status: 'pending',
-    progress: 40,
-    date: '2026-04-14',
-    description: 'Setting up analytics dashboards.',
-  },
-
-
+  
 ];
 
 function App() {
@@ -111,7 +107,7 @@ function App() {
       <MetricsData
         title="Metrics Data Component"
         icon="bi bi-bar-chart"
-        
+        statusMap={statusMap}
         progressBy="completed"
         headerButtons={[
           {
@@ -126,21 +122,20 @@ function App() {
         filterStyle={['tabs', 'keyword', 'dropdown', 'date']}
         showViewTypes={[
           {
-             view: 'table',
-             icon: 'bi bi-table',
-             tooltip: 'Table view',
-           
+            view: 'table',
+            icon: 'bi bi-table',
+            tooltip: 'Table view',
           },
-            {
-              view: 'grid',
-              icon: 'bi bi-card-list',
-              tooltip: 'Card view',
-            },
-            {
-              view: 'pipeline',
-              icon: 'bi bi-kanban',
-              tooltip: 'Pipeline view',
-            }
+          {
+            view: 'grid',
+            icon: 'bi bi-card-list',
+            tooltip: 'Card view',
+          },
+          {
+            view: 'pipeline',
+            icon: 'bi bi-kanban',
+            tooltip: 'Pipeline view',
+          },
         ]}
         paginated
         showFooter
@@ -159,7 +154,6 @@ function App() {
             dropdownAction: (option, row) => alert(`${option} ${row.name}`),
           },
         ]}
-      
       />
     </>
   );

@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { statusMap as defaultStatusMap } from './status-map';
 import './metrics-data.component.css';
-import './views/metrics-data.pipeline.css';
 
 let uniqueCounter = 0;
 
 function toLabel(key) {
   if (!key) return '';
+
   return String(key)
     .replace(/([a-z])([A-Z])/g, '$1 $2')
     .replace(/[-_]+/g, ' ')
@@ -45,13 +44,21 @@ function SortIcon({ active, asc }) {
   );
 }
 
-function icon({ direction = 'right', rotated = false }) {
-  const d = direction === 'left'
-    ? 'M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0'
-    : 'M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708';
+function ArrowIcon({ direction = 'right', rotated = false }) {
+  const d =
+    direction === 'left'
+      ? 'M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0'
+      : 'M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708';
 
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" className={rotated ? 'transition-icon rotate-90' : 'transition-icon'}>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      fill="currentColor"
+      viewBox="0 0 16 16"
+      className={rotated ? 'transition-icon rotate-90' : 'transition-icon'}
+    >
       <path fillRule="evenodd" d={d} />
     </svg>
   );
@@ -104,7 +111,7 @@ export default function MetricsData(props) {
     progressBy,
     mediaImage = '',
     idPrefix,
-    statusMap = defaultStatusMap,
+    statusMap = {},
     valueLenthColumns = [],
     searchKey = 'name',
     headerComponent = null,
@@ -113,7 +120,8 @@ export default function MetricsData(props) {
   } = props;
 
   const sorting = sortingProp || Sorting;
-  const [internalIdPrefix] = useState(() => idPrefix || `smart-table-${uniqueCounter++}`);
+
+  const [internalIdPrefix] = useState(() => idPrefix || `metrics-data-${uniqueCounter++}`);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedOption, setSelectedOption] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -131,15 +139,15 @@ export default function MetricsData(props) {
   const columns = useMemo(() => {
     let generated = Array.isArray(propColumns) ? propColumns : [];
 
-    if ((generated.length === 0 || generated.every(c => !c)) && autoGenerateColumns && data.length > 0) {
+    if ((generated.length === 0 || generated.every(column => !column)) && autoGenerateColumns && data.length > 0) {
       generated = Object.keys(data[0])
         .filter(key => !excludeColumns.includes(key))
         .map(key => ({ key, label: toLabel(key) }));
     }
 
-    const actionColumnKey = generated.some(c => c.key === 'action') ? 'action' : 'actions';
+    const actionColumnKey = generated.some(column => column.key === 'action') ? 'action' : 'actions';
 
-    if (showActions && actionButtons.length > 0 && !generated.some(c => c.key === 'action' || c.key === 'actions')) {
+    if (showActions && actionButtons.length > 0 && !generated.some(column => column.key === 'action' || column.key === 'actions')) {
       generated = [...generated, { key: actionColumnKey, label: 'Actions' }];
     }
 
@@ -148,6 +156,7 @@ export default function MetricsData(props) {
 
   const searchOptions = useMemo(() => {
     if (!filterBy) return [];
+
     return Array.from(new Set(data.map(item => item?.[filterBy]).filter(Boolean))).sort();
   }, [data, filterBy]);
 
@@ -156,84 +165,105 @@ export default function MetricsData(props) {
 
     return data
       .filter(item => {
-        const keywordMatch = !keyword || Object.values(item || {}).some(value => String(value || '').toLowerCase().includes(keyword));
+        const keywordMatch =
+          !keyword ||
+          Object.values(item || {}).some(value =>
+            String(value || '')
+              .toLowerCase()
+              .includes(keyword)
+          );
+
         const optionMatch = !selectedOption || item?.[filterBy] === selectedOption;
-        const dateMatch = !filterStyle.includes('date') || !datePicker || !item?.date || new Date(item.date).toDateString() === selectedDate.toDateString();
+
+        const dateMatch =
+          !filterStyle.includes('date') ||
+          !datePicker ||
+          !item?.date ||
+          new Date(item.date).toDateString() === selectedDate.toDateString();
+
         return keywordMatch && optionMatch && dateMatch;
       })
       .sort((a, b) => {
         if (!sortKey) return 0;
+
         const aVal = a?.[sortKey];
         const bVal = b?.[sortKey];
+
         if (aVal === bVal) return 0;
         if (aVal == null) return 1;
         if (bVal == null) return -1;
-        return sortAsc ? (aVal > bVal ? 1 : -1) : (aVal < bVal ? -1 : 1);
+
+        return sortAsc ? (aVal > bVal ? 1 : -1) : (aVal < bVal ? 1 : -1);
       });
   }, [data, searchKeyword, selectedOption, filterBy, filterStyle, datePicker, selectedDate, sortKey, sortAsc]);
 
   const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
-  const pagedData = paginated ? filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize) : filteredData;
+
+  const pagedData = paginated
+    ? filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+    : filteredData;
 
   const viewButtons = useMemo(() => {
     const iconMap = {
-      'table': 'bi bi-table',
-      'grid': 'bi bi-grid-3x3-gap',
-      'pipeline': 'bi bi-diagram-3',
-      'list': 'bi bi-list',
+      table: 'bi bi-table',
+      grid: 'bi bi-grid-3x3-gap',
+      pipeline: 'bi bi-diagram-3',
+      list: 'bi bi-list',
     };
 
     let types = [];
 
-    // Handle showViewTypes as array (custom view types with icon, tooltip, etc.)
     if (Array.isArray(showViewTypes) && showViewTypes.length > 0) {
       types = showViewTypes;
-    }
-    // Handle viewTypes prop
-    else if (Array.isArray(viewTypes) && viewTypes.length > 0) {
+    } else if (Array.isArray(viewTypes) && viewTypes.length > 0) {
       types = viewTypes;
-    }
-    // Handle showViewTypes as boolean (default view types)
-    else if (showViewTypes === true) {
+    } else if (showViewTypes === true) {
       types = ['table', 'grid', 'pipeline'];
     }
 
-    return types.map(vt => {
-      // If it's a string (default view type)
-      if (typeof vt === 'string') {
-        const action = vt.toLowerCase();
+    return types.map(viewType => {
+      if (typeof viewType === 'string') {
+        const action = viewType.toLowerCase();
+
         return {
-          label: toLabel(vt),
+          label: toLabel(viewType),
           action,
           targetId: `${internalIdPrefix}-view-${action}`,
-          tooltip: `${toLabel(vt)} View`,
+          tooltip: `${toLabel(viewType)} View`,
           className: `view-btn view-btn-${action}`,
           icon: iconMap[action] || `bi bi-${action}`,
         };
       }
 
-      // If it's an object (custom configuration)
-      const action = vt.view?.toLowerCase() || vt.action?.toLowerCase() || String(vt.label || '').toLowerCase();
+      const action =
+        viewType.view?.toLowerCase() ||
+        viewType.action?.toLowerCase() ||
+        String(viewType.label || '').toLowerCase();
+
       return {
-        label: vt.label || toLabel(action),
+        label: viewType.label || toLabel(action),
         action,
         targetId: `${internalIdPrefix}-view-${action}`,
-        tooltip: vt.tooltip || `${toLabel(action)} View`,
-        className: vt.className || `view-btn view-btn-${action}`,
-        icon: vt.icon || iconMap[action] || `bi bi-${action}`,
+        tooltip: viewType.tooltip || `${toLabel(action)} View`,
+        className: viewType.className || `view-btn view-btn-${action}`,
+        icon: viewType.icon || iconMap[action] || `bi bi-${action}`,
       };
     });
   }, [viewTypes, showViewTypes, internalIdPrefix]);
 
   const progressValue = useMemo(() => {
     if (!progressBy || !filterBy || !data.length) return 0;
+
     const statusToCheck = selectedOption || progressBy;
     const match = data.filter(item => item?.[filterBy] === statusToCheck).length;
+
     return Math.round((match / data.length) * 100);
   }, [data, selectedOption, progressBy, filterBy]);
 
   useEffect(() => {
-    if (currentPage > totalPages) setCurrentPage(1);
+    if (currentPage > totalPages) {
+      setCurrentPage(1);
+    }
   }, [currentPage, totalPages]);
 
   useEffect(() => {
@@ -241,12 +271,13 @@ export default function MetricsData(props) {
   }, [searchKeyword, selectedOption, selectedDate]);
 
   const getStatusStyles = status => {
-    const key = String(status || '').toLowerCase();
-    const color = statusMap?.[key] || key || 'info';
+    const key = String(status || '').toLowerCase().trim();
+    const color = statusMap?.[key] || 'default';
 
     return {
       color,
       tagClass: `metrics-tag ${color}`,
+      badgeClass: `metrics-badge ${color}`,
       progressClass: `progress-bar ${color}`,
       statusClass: `status-${color}`,
     };
@@ -254,6 +285,7 @@ export default function MetricsData(props) {
 
   const getValue = (row, key) => {
     const value = row?.[key];
+
     return value !== undefined && value !== null && value !== '' ? String(value) : '-';
   };
 
@@ -263,14 +295,17 @@ export default function MetricsData(props) {
 
   const getRowProgress = row => {
     if (!row) return null;
+
     const value = row.progress ?? row.percentage ?? row.percent;
     const num = Number(value);
+
     return Number.isFinite(num) ? Math.min(Math.max(num, 0), 100) : null;
   };
 
   const getTabCount = option => filteredData.filter(item => item?.[filterBy] === option).length;
 
-  const getRowsByStatus = status => filteredData.filter(item => String(item?.status || '').toLowerCase() === String(status || '').toLowerCase());
+  const getRowsByStatus = status =>
+    filteredData.filter(item => String(item?.status || '').toLowerCase() === String(status || '').toLowerCase());
 
   const handleSortBy = key => {
     if (!sorting) return;
@@ -291,6 +326,7 @@ export default function MetricsData(props) {
   const toggleSelectRow = (row, checked) => {
     setSelectedRows(prev => {
       if (checked) return prev.includes(row) ? prev : [...prev, row];
+
       return prev.filter(item => item !== row);
     });
   };
@@ -324,12 +360,11 @@ export default function MetricsData(props) {
   };
 
   const executeAction = button => {
-    // Set current view type if action matches a view type
     const viewTypeMap = {
-      'table': 'table',
-      'list': 'table', // List view renders as table
-      'grid': 'grid',
-      'pipeline': 'pipeline',
+      table: 'table',
+      list: 'table',
+      grid: 'grid',
+      pipeline: 'pipeline',
     };
 
     if (viewTypeMap[button.action]) {
@@ -358,12 +393,14 @@ export default function MetricsData(props) {
         onClick={event => event.stopPropagation()}
         onChange={event => onChange(event.target.checked)}
       />
+
       <label className="cbx" htmlFor={id}>
         <div className="checkbox">
           <svg width="12px" height="10px" viewBox="0 0 12 10">
             <polyline points="1.5 6 4.5 9 10.5 1" />
           </svg>
         </div>
+
         {children}
       </label>
     </div>
@@ -386,11 +423,12 @@ export default function MetricsData(props) {
         <div className="media-tile">
           <div className={`media-img ${statusClass}`}>
             {imageSrc && !imageFailed ? (
-              <img className="img-fluid" src={imageSrc} alt="Media Image" onError={() => handleImageError(row)} />
+              <img className="img-fluid" src={imageSrc} alt="Media" onError={() => handleImageError(row)} />
             ) : (
               <span className="letter-fallback">{String(row.name || '??').substring(0, 2).toUpperCase()}</span>
             )}
           </div>
+
           <div className="media-details">
             <p className="name text-dark">{row.name || 'Unknown'}</p>
             <p className="text-muted">{row.source || 'No Information'}</p>
@@ -398,8 +436,12 @@ export default function MetricsData(props) {
         </div>
 
         {showMobileToggle && (
-          <button className="metrics-btn mobile-btn" type="button" onClick={() => setActiveRowIndex(prev => (prev === index ? null : index))}>
-            <icon rotated={activeRowIndex === index} />
+          <button
+            className="metrics-btn mobile-btn"
+            type="button"
+            onClick={() => setActiveRowIndex(prev => (prev === index ? null : index))}
+          >
+            <ArrowIcon rotated={activeRowIndex === index} />
           </button>
         )}
       </div>
@@ -423,6 +465,7 @@ export default function MetricsData(props) {
                 {btn.icon && <i className={btn.icon} />}
                 {btn.label}
               </button>
+
               <ul className={`dropdown-menu ${dropdownShownIndex === dropdownKey ? 'show' : ''}`}>
                 {btn.options?.map(option => (
                   <li key={option}>
@@ -491,6 +534,7 @@ export default function MetricsData(props) {
             {button.icon && <i className={button.icon} />}
             {button.label}
           </button>
+
           <ul className={`dropdown-menu ${dropdownShownIndex === dropdownKey ? 'show' : ''}`}>
             {button.options?.map(option => (
               <li key={option}>
@@ -505,7 +549,6 @@ export default function MetricsData(props) {
     }
 
     if (type === 'view') {
-      // View buttons only show icon, no label
       return (
         <button
           key={button.targetId || dropdownKey}
@@ -520,7 +563,6 @@ export default function MetricsData(props) {
       );
     }
 
-    // Header buttons show label
     return (
       <button
         key={button.targetId || dropdownKey}
@@ -542,11 +584,22 @@ export default function MetricsData(props) {
     return (
       <div className="date-picker" style={{ minWidth: 350 }}>
         <div className="metrics-btn-group align-justify">
-          <input className="metrics-select" type="date" value={value} onChange={event => selectDate(new Date(event.target.value))} />
+          <input
+            className="metrics-select"
+            type="date"
+            value={value}
+            onChange={event => selectDate(new Date(event.target.value))}
+          />
         </div>
+
         <div className="metrics-btn-group footer align-right">
-          <button className="metrics-btn" type="button" onClick={() => setDatePicker(false)}>Cancel</button>
-          <button className="metrics-btn primary" type="button" onClick={() => setDatePicker(false)}>Confirm</button>
+          <button className="metrics-btn" type="button" onClick={() => setDatePicker(false)}>
+            Cancel
+          </button>
+
+          <button className="metrics-btn primary" type="button" onClick={() => setDatePicker(false)}>
+            Confirm
+          </button>
         </div>
       </div>
     );
@@ -566,27 +619,29 @@ export default function MetricsData(props) {
                 scope="col"
               >
                 <div className="sorting-group">
-                  {colIndex === 0 && renderCheckbox({
-                    id: `${internalIdPrefix}-cbx-header`,
-                    checked: isAllSelected,
-                    onChange: toggleAllRows,
-                    children: selectedRows.length > 1 && (
-                      <div className="metrics-dropdown">
-                        <button className="metrics-btn no-bg" type="button" onClick={event => toggleDropdown('bulk', event)}>
-                          <ThreeDotsIcon />
-                        </button>
-                        <ul className={`dropdown-menu ${dropdownShownIndex === 'bulk' ? 'show' : ''}`}>
-                          {actionButtons.map(btn => (
-                            <li key={btn.label}>
-                              <button className="dropdown-item" type="button" onClick={() => handleBulkAction(btn)}>
-                                {btn.label}
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ),
-                  })}
+                  {colIndex === 0 &&
+                    renderCheckbox({
+                      id: `${internalIdPrefix}-cbx-header`,
+                      checked: isAllSelected,
+                      onChange: toggleAllRows,
+                      children: selectedRows.length > 1 && (
+                        <div className="metrics-dropdown">
+                          <button className="metrics-btn no-bg" type="button" onClick={event => toggleDropdown('bulk', event)}>
+                            <ThreeDotsIcon />
+                          </button>
+
+                          <ul className={`dropdown-menu ${dropdownShownIndex === 'bulk' ? 'show' : ''}`}>
+                            {actionButtons.map(btn => (
+                              <li key={btn.label}>
+                                <button className="dropdown-item" type="button" onClick={() => handleBulkAction(btn)}>
+                                  {btn.label}
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ),
+                    })}
 
                   <span>{column.label}</span>
                   {sorting && <SortIcon active={sortKey === column.key} asc={sortAsc} />}
@@ -597,15 +652,22 @@ export default function MetricsData(props) {
         </thead>
 
         <tbody>
-          {pagedData.length > 0 ? pagedData.map((row, rowIndex) => (
-            <tr key={row.id ?? rowIndex} className={activeRowIndex === rowIndex || selectedRows.includes(row) ? 'dynamic-row' : ''}>
-              {columns.map(column => (
-                <td key={`${rowIndex}-${column.key}`}>{renderTableCell(row, column, rowIndex)}</td>
-              ))}
-            </tr>
-          )) : (
+          {pagedData.length > 0 ? (
+            pagedData.map((row, rowIndex) => (
+              <tr
+                key={row.id ?? rowIndex}
+                className={activeRowIndex === rowIndex || selectedRows.includes(row) ? 'dynamic-row' : ''}
+              >
+                {columns.map(column => (
+                  <td key={`${rowIndex}-${column.key}`}>{renderTableCell(row, column, rowIndex)}</td>
+                ))}
+              </tr>
+            ))
+          ) : (
             <tr>
-              <td colSpan={columns.length} className="text-center py-3">No records found.</td>
+              <td colSpan={columns.length || 1} className="text-center py-3">
+                No records found.
+              </td>
             </tr>
           )}
         </tbody>
@@ -614,22 +676,53 @@ export default function MetricsData(props) {
           <tfoot>
             <tr>
               <td>{footerComponent}</td>
+
               <td colSpan={Math.max(columns.length - 1, 1)}>
                 <div className="pagination metrics-btn-group align-right">
-                  <button className="metrics-btn" type="button" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                  class="bi bi-chevron-left" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd"
-                    d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
-                </svg>
+                  <button
+                    className="metrics-btn"
+                    type="button"
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-chevron-left"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
+                      />
+                    </svg>
                   </button>
-                  <span className="metrics-btn">Page {currentPage} of {totalPages}</span>
-                  <button className="metrics-btn" type="button" onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                  class="bi bi-chevron-right" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd"
-                    d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
-                </svg>
+
+                  <span className="metrics-btn">
+                    Page {currentPage} of {totalPages}
+                  </span>
+
+                  <button
+                    className="metrics-btn"
+                    type="button"
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-chevron-right"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"
+                      />
+                    </svg>
                   </button>
                 </div>
               </td>
@@ -652,16 +745,18 @@ export default function MetricsData(props) {
           <div className="media-tile">
             <div className={`media-img ${statusStyles.color}`}>
               {imageSrc && !imageFailed ? (
-                <img className="img-fluid" src={imageSrc} alt="Media Image" onError={() => handleImageError(row)} />
+                <img className="img-fluid" src={imageSrc} alt="Media" onError={() => handleImageError(row)} />
               ) : (
                 <span className="letter-fallback">{String(row.name || '??').substring(0, 2).toUpperCase()}</span>
               )}
             </div>
+
             <div className="media-details">
               <p className="name text-dark">{row.name || 'Unknown'}</p>
               <p className="text-muted">{row.source || 'No Information'}</p>
             </div>
           </div>
+
           <span className={statusStyles.tagClass}>{row.status || 'N/A'}</span>
         </div>
 
@@ -670,14 +765,23 @@ export default function MetricsData(props) {
             {progress !== null && (
               <div className="pipeline-progress">
                 <div className="progress">
-                  <div className={statusStyles.progressClass} role="progressbar" style={{ width: `${progress}%` }} aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100">
-                  <p className='metrics-tag'>{progress}%</p>
+                  <div
+                    className={statusStyles.progressClass}
+                    role="progressbar"
+                    style={{ width: `${progress}%` }}
+                    aria-valuenow={progress}
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  >
+                    <p className="metrics-tag">{progress}%</p>
                   </div>
                 </div>
               </div>
             )}
+
             {row.date && <div className="pipeline-date">{new Date(row.date).toLocaleDateString()}</div>}
           </div>
+
           {row.description && <p className="description">{row.description}</p>}
         </div>
 
@@ -688,30 +792,39 @@ export default function MetricsData(props) {
 
   const renderGridTemplate = () => (
     <div className="grid-container">
-      {filteredData.length > 0 ? filteredData.map((row, index) => renderCard(row, index)) : <div className="grid-empty">No records found.</div>}
+      {filteredData.length > 0 ? (
+        filteredData.map((row, index) => renderCard(row, index))
+      ) : (
+        <div className="grid-empty">No records found.</div>
+      )}
     </div>
   );
 
   const renderPipelineTemplate = () => {
-    const statuses = searchOptions.length > 0
-      ? searchOptions
-      : Array.from(new Set(filteredData.map(row => row.status).filter(Boolean)));
+    const statuses =
+      searchOptions.length > 0
+        ? searchOptions
+        : Array.from(new Set(filteredData.map(row => row.status).filter(Boolean)));
 
     return (
       <div className="pipeline-container">
         {statuses.map(status => {
           const columnData = getRowsByStatus(status);
+          const statusStyles = getStatusStyles(status);
 
           return (
             <div className="pipeline-column" key={status}>
-              <div className={`metrics-headers ${String(status || '').toLowerCase()}`}>
+              <div className={`metrics-headers ${statusStyles.color}`}>
                 <h3>{toLabel(status)}</h3>
-                <span className={`metrics-tag ${getStatusStyles(status).color}`}>{columnData.length}</span>
+                <span className={`metrics-tag ${statusStyles.color}`}>{columnData.length}</span>
               </div>
+
               <div className="pipeline-body">
-                {columnData.length > 0
-                  ? columnData.map((row, index) => renderCard(row, index, 'metrics-card-footer'))
-                  : <div className="pipeline-empty">No items</div>}
+                {columnData.length > 0 ? (
+                  columnData.map((row, index) => renderCard(row, index, 'metrics-card-footer'))
+                ) : (
+                  <div className="pipeline-empty">No items</div>
+                )}
               </div>
             </div>
           );
@@ -723,6 +836,7 @@ export default function MetricsData(props) {
   const renderCurrentTemplate = () => {
     if (currentViewType === 'grid') return renderGridTemplate();
     if (currentViewType === 'pipeline') return renderPipelineTemplate();
+
     return renderTableTemplate();
   };
 
@@ -739,17 +853,29 @@ export default function MetricsData(props) {
               </h6>
 
               {filterStyle.includes('tabs') && currentViewType !== 'pipeline' && (
-                <ul className="nav metrics-tabs" id="myTab" role="tablist">
+                <ul className="nav metrics-tabs" role="tablist">
                   <li className="nav-item" role="presentation">
-                    <button className={`nav-link ${selectedOption === '' ? 'active' : ''}`} type="button" role="tab" onClick={() => setSelectedOption('')}>
+                    <button
+                      className={`nav-link ${selectedOption === '' ? 'active' : ''}`}
+                      type="button"
+                      role="tab"
+                      onClick={() => setSelectedOption('')}
+                    >
                       All
                     </button>
                   </li>
+
                   {searchOptions.map(option => (
                     <li className="nav-item" role="presentation" key={option}>
-                      <button className={`nav-link ${selectedOption === option ? 'active' : ''}`} type="button" role="tab" onClick={() => setSelectedOption(option)}>
-                        <span className={`metrics-badge ${getStatusStyles(option).tagClass}`}>{getTabCount(option)}</span>
+                      <button
+                        className={`nav-link  ${selectedOption === option ? 'active' : ''}`}
+                        type="button"
+                        role="tab"
+                        onClick={() => setSelectedOption(option)}
+                      >
+                        
                         {option}
+                        <span className={getStatusStyles(option).badgeClass}>{getTabCount(option)}</span>
                       </button>
                     </li>
                   ))}
@@ -765,7 +891,12 @@ export default function MetricsData(props) {
                   {filterStyle.includes('dropdown') && filterBy && (
                     <select className="metrics-select" value={selectedOption} onChange={event => setSelectedOption(event.target.value)}>
                       <option value="">All</option>
-                      {searchOptions.map(option => <option key={option} value={option}>{option}</option>)}
+
+                      {searchOptions.map(option => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
                     </select>
                   )}
 
@@ -827,11 +958,9 @@ export default function MetricsData(props) {
         </div>
       )}
 
-      <div className={`metrics-body view-${currentViewType}`}>
-        {renderCurrentTemplate()}
-      </div>
+      <div className={`metrics-body view-${currentViewType}`}>{renderCurrentTemplate()}</div>
 
-    
+      {showFooter && footerComponent && <div className="metrics-footer">{footerComponent}</div>}
     </div>
   );
 }

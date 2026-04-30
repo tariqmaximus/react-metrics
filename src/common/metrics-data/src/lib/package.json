@@ -1,0 +1,35 @@
+{
+  "name": "metrics-data-table",
+  "version": "1.0.0",
+  "description": "Reusable React metrics data table with table, grid and pipeline views",
+  "main": "dist/metrics-data-table.umd.js",
+  "module": "dist/metrics-data-table.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "dependencies": {
+    "bootstrap-icons": "^1.11.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^latest",
+    "vite": "^latest"
+  },
+  "keywords": [
+    "react",
+    "table",
+    "metrics",
+    "data-grid",
+    "pipeline"
+  ],
+  "author": "Tariq Mehmood",
+  "license": "MIT"
+}

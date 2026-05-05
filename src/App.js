@@ -2,9 +2,37 @@ import './App.css';
 import { MetricsData } from './common/metrics-data';
 
 const statusMap = {
-  completed: 'success',
+  pending: {
+    text: '#92400e',
+    background: '#fef3c7',
+    border: '#f59e0b',
+  },
+  completed: {
+    text: '#065f46',
+    background: '#d1fae5',
+    border: '#10b981',
+  },
+  inprogress: {
+    text: '#991b1b',
+    background: '#fee2e2',
+    border: '#ef4444',
+  },
   inprogress: 'info',
-  pending: 'warning',
+};
+
+const theme = {
+  primary: '#6d5dfc',
+  background: '#ffffff',
+  surface: '#ffffff',
+  text: '#111827',
+  textMuted: '#6b7280',
+  border: '#d1d5db',
+  cardBg: '#ffffff',
+  headerBg: '#ffffff',
+  gridBg: '#f3f4f6',
+  pipelineBg: '#eef2ff',
+  shadow: '0 10px 30px rgba(0,0,0,0.08)',
+  cardRadius: '14px',
 };
 
 const dummyData = [
@@ -107,6 +135,7 @@ function App() {
       <MetricsData
         title="Metrics Data Component"
         icon="bi bi-bar-chart"
+        theme={theme}
         statusMap={statusMap}
         progressBy="completed"
         headerButtons={[

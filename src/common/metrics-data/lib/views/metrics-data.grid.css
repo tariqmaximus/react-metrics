@@ -7,7 +7,7 @@
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 16px;
   padding: 16px;
-  background-color: #f9f9f9;
+  background-color: var(--md-grid-bg, #f9f9f9);
   width: 100%;
   animation: fadeIn 0.3s ease-in;
 }

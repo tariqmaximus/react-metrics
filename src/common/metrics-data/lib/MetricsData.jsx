@@ -111,6 +111,7 @@ export default function MetricsData(props) {
     progressBy,
     mediaImage = '',
     idPrefix,
+    theme = {},
     statusMap = {},
     valueLenthColumns = [],
     searchKey = 'name',
@@ -270,16 +271,26 @@ export default function MetricsData(props) {
     setCurrentPage(1);
   }, [searchKeyword, selectedOption, selectedDate]);
 
-  const getStatusStyles = status => {
+  const getStatusTheme = status => {
     const key = String(status || '').toLowerCase().trim();
-    const color = statusMap?.[key] || 'default';
+    const value = statusMap?.[key];
+
+    if (typeof value === 'object' && value !== null) {
+      return {
+        className: 'custom-status',
+        style: {
+          '--md-status-text': value.text,
+          '--md-status-bg': value.background,
+          '--md-status-border': value.border,
+        },
+      };
+    }
+
+    const color = value || key || 'default';
 
     return {
-      color,
-      tagClass: `metrics-tag ${color}`,
-      badgeClass: `metrics-badge ${color}`,
-      progressClass: `progress-bar ${color}`,
-      statusClass: `status-${color}`,
+      className: color,
+      style: {},
     };
   };
 
@@ -410,7 +421,7 @@ export default function MetricsData(props) {
     const rowKey = getRowKey(row);
     const imageFailed = imageLoadFailedMap[rowKey];
     const imageSrc = row.mediaTile || mediaImage;
-    const statusClass = getStatusStyles(row.status).color;
+    const statusTheme = getStatusTheme(row.status);
 
     return (
       <div className="metrics-group">
@@ -421,7 +432,7 @@ export default function MetricsData(props) {
         })}
 
         <div className="media-tile">
-          <div className={`media-img ${statusClass}`}>
+          <div className={`media-img ${statusTheme.className}`}>
             {imageSrc && !imageFailed ? (
               <img className="img-fluid" src={imageSrc} alt="Media" onError={() => handleImageError(row)} />
             ) : (
@@ -501,18 +512,23 @@ export default function MetricsData(props) {
         return renderMediaTile(row, rowIndex, true);
 
       case 'status':
-        return <span className={getStatusStyles(row.status).tagClass}>{getValue(row, column.key)}</span>;
+        const statusTheme = getStatusTheme(row.status);
+        return (
+          <span className={statusTheme.className === 'custom-status' ? `metrics-tag custom-status` : `metrics-tag ${statusTheme.className}`} style={statusTheme.style}>
+            {getValue(row, column.key)}
+          </span>
+        );
 
       case 'progress':
         const progress = getRowProgress(row);
         if (progress !== null) {
-          const statusStyles = getStatusStyles(row.status);
+          const statusTheme = getStatusTheme(row.status);
           return (
             <div className="progress" style={{ minWidth: 150 }}>
               <div
-                className={statusStyles.progressClass}
+                className={`progress-bar ${statusTheme.className}`}
                 role="progressbar"
-                style={{ width: `${progress}%` }}
+                style={{ width: `${progress}%`, ...statusTheme.style }}
                 aria-valuenow={progress}
                 aria-valuemin="0"
                 aria-valuemax="100"
@@ -758,13 +774,13 @@ export default function MetricsData(props) {
     const progress = getRowProgress(row);
     const imageFailed = imageLoadFailedMap[getRowKey(row)];
     const imageSrc = row.mediaTile || mediaImage;
-    const statusStyles = getStatusStyles(row.status);
+    const statusTheme = getStatusTheme(row.status);
 
     return (
-      <div className={`metrics-card ${statusStyles.statusClass}`} key={row.id ?? index}>
+      <div className={`metrics-card ${statusTheme.className}`} key={row.id ?? index}>
         <div className="metrics-card-header">
           <div className="media-tile">
-            <div className={`media-img ${statusStyles.color}`}>
+            <div className={`media-img ${statusTheme.className}`}>
               {imageSrc && !imageFailed ? (
                 <img className="img-fluid" src={imageSrc} alt="Media" onError={() => handleImageError(row)} />
               ) : (
@@ -778,7 +794,12 @@ export default function MetricsData(props) {
             </div>
           </div>
 
-          <span className={statusStyles.tagClass}>{row.status || 'N/A'}</span>
+          <span
+            className={statusTheme.className === 'custom-status' ? 'metrics-tag custom-status' : `metrics-tag ${statusTheme.className}`}
+            style={statusTheme.style}
+          >
+            {row.status || 'N/A'}
+          </span>
         </div>
 
         <div className="card-body">
@@ -787,9 +808,9 @@ export default function MetricsData(props) {
               <div className="pipeline-progress">
                 <div className="progress">
                   <div
-                    className={statusStyles.progressClass}
+                    className={`progress-bar ${statusTheme.className}`}
                     role="progressbar"
-                    style={{ width: `${progress}%` }}
+                    style={{ width: `${progress}%`, ...statusTheme.style }}
                     aria-valuenow={progress}
                     aria-valuemin="0"
                     aria-valuemax="100"
@@ -831,13 +852,13 @@ export default function MetricsData(props) {
       <div className="pipeline-container">
         {statuses.map(status => {
           const columnData = getRowsByStatus(status);
-          const statusStyles = getStatusStyles(status);
+          const statusTheme = getStatusTheme(status);
 
           return (
             <div className="pipeline-column" key={status}>
-              <div className={`metrics-headers ${statusStyles.color}`}>
+              <div className={`metrics-headers ${statusTheme.className}`} style={statusTheme.style}>
                 <h3>{toLabel(status)}</h3>
-                <span className={`metrics-tag ${statusStyles.color}`}>{columnData.length}</span>
+                <span className={`metrics-tag ${statusTheme.className}`} style={statusTheme.style}>{columnData.length}</span>
               </div>
 
               <div className="pipeline-body">
@@ -862,7 +883,42 @@ export default function MetricsData(props) {
   };
 
   return (
-    <div className={`metrics-data ${variant} ${isCollapsed ? 'collapsed' : ''}`.trim()}>
+    <div
+      className={`metrics-data ${variant} ${isCollapsed ? 'collapsed' : ''}`.trim()}
+      style={{
+        '--md-bg': theme.background || '#ffffff',
+        '--md-surface': theme.surface || '#ffffff',
+        '--md-surface-alt': theme.surfaceAlt || '#f5f5f5',
+
+        '--md-text': theme.text || '#63634e',
+        '--md-text-muted': theme.textMuted || '#888888',
+        '--md-heading': theme.heading || '#212529',
+
+        '--md-border': theme.border || '#e7e7e7',
+        '--md-border-light': theme.borderLight || '#f0f0f0',
+
+        '--md-primary': theme.primary || '#0173df',
+        '--md-success': theme.success || '#28a745',
+        '--md-warning': theme.warning || '#f1a10a',
+        '--md-info': theme.info || '#17a2b8',
+        '--md-danger': theme.danger || '#dc3545',
+
+        '--md-card-bg': theme.cardBg || '#ffffff',
+        '--md-header-bg': theme.headerBg || '#ffffff',
+        '--md-table-header-bg': theme.tableHeaderBg || '#ffffff',
+        '--md-grid-bg': theme.gridBg || '#f9f9f9',
+        '--md-pipeline-bg': theme.pipelineBg || '#f5f7fa',
+
+        '--md-radius': theme.radius || '8px',
+        '--md-card-radius': theme.cardRadius || '10px',
+
+        '--md-shadow': theme.shadow || '0 0px 16px rgba(0, 0, 0, 0.1)',
+        '--md-card-shadow': theme.cardShadow || '0 2px 8px rgba(0, 0, 0, 0.04)',
+        '--md-card-hover-shadow': theme.cardHoverShadow || '0 12px 32px rgba(0, 0, 0, 0.12)',
+
+        ...theme.variables,
+      }}
+    >
       {metricsHeader && (
         <div className="metrics-header">
           <div className="metrics-container">
@@ -896,7 +952,17 @@ export default function MetricsData(props) {
                       >
                         
                         {option}
-                        <span className={getStatusStyles(option).badgeClass}>{getTabCount(option)}</span>
+                        {(() => {
+                          const optionTheme = getStatusTheme(option);
+                          return (
+                            <span
+                              className={optionTheme.className === 'custom-status' ? 'metrics-badge custom-status' : `metrics-badge ${optionTheme.className}`}
+                              style={optionTheme.style}
+                            >
+                              {getTabCount(option)}
+                            </span>
+                          );
+                        })()}
                       </button>
                     </li>
                   ))}
@@ -962,20 +1028,23 @@ export default function MetricsData(props) {
             </div>
           </div>
 
-          {progressBy && (
-            <div className="progress">
-              <div
-                className={getStatusStyles(selectedOption || progressBy).progressClass}
-                role="progressbar"
-                style={{ width: `${progressValue}%` }}
-                aria-valuenow={progressValue}
-                aria-valuemin="0"
-                aria-valuemax="100"
-              >
-                <p className="metrics-tag">{progressValue}%</p>
+          {progressBy && (() => {
+            const progressStatusTheme = getStatusTheme(selectedOption || progressBy);
+            return (
+              <div className="progress">
+                <div
+                  className={`progress-bar ${progressStatusTheme.className}`}
+                  role="progressbar"
+                  style={{ width: `${progressValue}%`, ...progressStatusTheme.style }}
+                  aria-valuenow={progressValue}
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <p className="metrics-tag">{progressValue}%</p>
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
       )}
 

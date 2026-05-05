@@ -503,6 +503,27 @@ export default function MetricsData(props) {
       case 'status':
         return <span className={getStatusStyles(row.status).tagClass}>{getValue(row, column.key)}</span>;
 
+      case 'progress':
+        const progress = getRowProgress(row);
+        if (progress !== null) {
+          const statusStyles = getStatusStyles(row.status);
+          return (
+            <div className="progress" style={{ minWidth: 150 }}>
+              <div
+                className={statusStyles.progressClass}
+                role="progressbar"
+                style={{ width: `${progress}%` }}
+                aria-valuenow={progress}
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                <span className="progress-text">{progress}%</span>
+              </div>
+            </div>
+          );
+        }
+        return <span className="value">-</span>;
+
       case 'action':
       case 'actions':
         return renderActionButtons(row, rowIndex);

@@ -277,7 +277,7 @@ export default function MetricsData(props) {
 
     if (typeof value === 'object' && value !== null) {
       return {
-        className: 'custom-status',
+        className: 'metrics-status',
         style: {
           '--md-status-text': value.text,
           '--md-status-bg': value.background,
@@ -514,7 +514,7 @@ export default function MetricsData(props) {
       case 'status':
         const statusTheme = getStatusTheme(row.status);
         return (
-          <span className={statusTheme.className === 'custom-status' ? `metrics-tag custom-status` : `metrics-tag ${statusTheme.className}`} style={statusTheme.style}>
+          <span className={statusTheme.className === 'metrics-status' ? `metrics-tag metrics-status` : `metrics-tag ${statusTheme.className}`} style={statusTheme.style}>
             {getValue(row, column.key)}
           </span>
         );
@@ -795,7 +795,7 @@ export default function MetricsData(props) {
           </div>
 
           <span
-            className={statusTheme.className === 'custom-status' ? 'metrics-tag custom-status' : `metrics-tag ${statusTheme.className}`}
+            className={statusTheme.className === 'metrics-status' ? 'metrics-tag metrics-status' : `metrics-tag ${statusTheme.className}`}
             style={statusTheme.style}
           >
             {row.status || 'N/A'}
@@ -884,7 +884,7 @@ export default function MetricsData(props) {
 
   return (
     <div
-      className={`metrics-data ${variant} ${isCollapsed ? 'collapsed' : ''}`.trim()}
+      className={`metrics-data gnaric-font-size ${variant} ${isCollapsed ? 'collapsed' : ''}`.trim()}
       style={{
         '--md-bg': theme.background || '#ffffff',
         '--md-surface': theme.surface || '#ffffff',
@@ -956,7 +956,7 @@ export default function MetricsData(props) {
                           const optionTheme = getStatusTheme(option);
                           return (
                             <span
-                              className={optionTheme.className === 'custom-status' ? 'metrics-badge custom-status' : `metrics-badge ${optionTheme.className}`}
+                              className={optionTheme.className === 'metrics-status' ? 'metrics-badge metrics-status' : `metrics-badge ${optionTheme.className}`}
                               style={optionTheme.style}
                             >
                               {getTabCount(option)}

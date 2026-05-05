@@ -13,15 +13,14 @@ const statusMap = {
     border: '#10b981',
   },
   inprogress: {
-    text: '#991b1b',
-    background: '#fee2e2',
-    border: '#ef4444',
+    text: '#1e40af',
+    background: '#dbeafe',
+    border: '#3b82f6',
   },
-  inprogress: 'info',
 };
 
 const theme = {
-  primary: '#6d5dfc',
+  primary: '#2a6adf',
   background: '#ffffff',
   surface: '#ffffff',
   text: '#111827',

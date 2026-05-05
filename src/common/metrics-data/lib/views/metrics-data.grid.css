@@ -41,10 +41,6 @@
     gap: var(--space-sm);
   }
 
-  .view-grid .grid-card-title h3 {
-    font-size: var(--font-size-base);
-  }
-
   .view-grid .grid-card-body {
     padding: var(--space-sm);
   }

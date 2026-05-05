@@ -1,25 +1,26 @@
 
 /* Custom status overrides for theme variables */
+
 .metrics-data .metrics-tag.metrics-status,
 .metrics-data .metrics-badge.metrics-status,
 .metrics-data .progress-bar.metrics-status,
 .metrics-data .metrics-headers.metrics-status {
   color: var(--md-status-text);
   background-color: var(--md-status-bg);
-  border-color: var(--md-status-border);
+  
 }
-.metrics-data .media-tile .media-img.metrics-status {
-  background-color: var(--md-status-bg);
-  color: var(--md-status-text);
-  border: 3px solid var(--md-status-border) ;
+.metrics-data .media-tile .media-img {
+  border-color: var(--md-status-border, var(--md-border));
+  background-color: var(--md-status-bg, transparent);
+  color: var(--md-status-text, var(--md-surface, #ffffff));
 }
 /* Table-specific custom status overrides */
-.metrics-data table .progress .progress-bar.metrics-status {
-  background-color: var(--md-status-bg);
-  color: var(--md-status-text);
-  border-color: var(--md-status-border);
+.metrics-data .media-tile .media-img.metrics-status {
+  border-color: var(--md-status-bg);
+  background-color:var(--md-status-border);
+  color: white;
 }
 .metrics-status .metrics-tag {
   background-color: var(--md-status-bg) !important;
-  color: var(--md-status-text);
+  color: var(--md-status-text) !important;
 }

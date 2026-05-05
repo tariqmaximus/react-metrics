@@ -36,7 +36,7 @@ const theme = {
 
 const dummyData = [
   {
-    mediaTile: 'https://picsum.photos/80?random=1',
+    mediaTile: '',
     name: 'Marketing Rebase',
     source: 'Campaign Team',
     status: 'completed',
@@ -132,6 +132,7 @@ function App() {
   return (
     <>
       <MetricsData
+      mediaDetailsKeys={['name', 'date']}
         title="Metrics Data Component"
         icon="bi bi-bar-chart"
         theme={theme}

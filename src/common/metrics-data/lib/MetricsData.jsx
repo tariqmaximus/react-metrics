@@ -110,6 +110,8 @@ export default function MetricsData(props) {
     sub,
     progressBy,
     mediaImage = '',
+    mediaDetailsRenderer,
+    mediaDetailsKeys = ['name', 'source'],
     idPrefix,
     theme = {},
     statusMap = {},
@@ -152,8 +154,13 @@ export default function MetricsData(props) {
       generated = [...generated, { key: actionColumnKey, label: 'Actions' }];
     }
 
+    // If mediaTile column is present, exclude mediaDetailsKeys as they are shown in media tile
+    if (generated.some(column => column.key === 'mediaTile')) {
+      generated = generated.filter(column => !mediaDetailsKeys.includes(column.key));
+    }
+
     return generated;
-  }, [propColumns, data, excludeColumns, autoGenerateColumns, showActions, actionButtons.length]);
+  }, [propColumns, data, excludeColumns, autoGenerateColumns, showActions, actionButtons.length, mediaDetailsKeys]);
 
   const searchOptions = useMemo(() => {
     if (!filterBy) return [];
@@ -432,17 +439,28 @@ export default function MetricsData(props) {
         })}
 
         <div className="media-tile">
-          <div className={`media-img ${statusTheme.className}`}>
+          <div className={`media-img ${statusTheme.className}`} style={statusTheme.style}>
             {imageSrc && !imageFailed ? (
               <img className="img-fluid" src={imageSrc} alt="Media" onError={() => handleImageError(row)} />
             ) : (
-              <span className="letter-fallback">{String(row.name || '??').substring(0, 2).toUpperCase()}</span>
+              <span className="letter-fallback">{String(row.name || '??').substring(0, 1).toUpperCase()}</span>
             )}
           </div>
 
           <div className="media-details">
-            <p className="name text-dark">{row.name || 'Unknown'}</p>
-            <p className="text-muted">{row.source || 'No Information'}</p>
+            {typeof row.mediaDetailsRenderer === 'function' ? (
+              row.mediaDetailsRenderer(row)
+            ) : typeof mediaDetailsRenderer === 'function' ? (
+              mediaDetailsRenderer(row)
+            ) : (
+              <>
+                {mediaDetailsKeys.map((key, idx) => (
+                  <p key={key} className={idx === 0 ? "name text-dark" : "text-muted"}>
+                    {row[key] || `No ${toLabel(key)}`}
+                  </p>
+                ))}
+              </>
+            )}
           </div>
         </div>
 
@@ -780,17 +798,28 @@ export default function MetricsData(props) {
       <div className={`metrics-card ${statusTheme.className}`} key={row.id ?? index}>
         <div className="metrics-card-header">
           <div className="media-tile">
-            <div className={`media-img ${statusTheme.className}`}>
+            <div className={`media-img ${statusTheme.className}`} style={statusTheme.style}>
               {imageSrc && !imageFailed ? (
                 <img className="img-fluid" src={imageSrc} alt="Media" onError={() => handleImageError(row)} />
               ) : (
-                <span className="letter-fallback">{String(row.name || '??').substring(0, 2).toUpperCase()}</span>
+                <span className="letter-fallback">{String(row.name || '??').substring(0, 1).toUpperCase()}</span>
               )}
             </div>
 
             <div className="media-details">
-              <p className="name text-dark">{row.name || 'Unknown'}</p>
-              <p className="text-muted">{row.source || 'No Information'}</p>
+              {typeof row.mediaDetailsRenderer === 'function' ? (
+                row.mediaDetailsRenderer(row)
+              ) : typeof mediaDetailsRenderer === 'function' ? (
+                mediaDetailsRenderer(row)
+              ) : (
+                <>
+                  {mediaDetailsKeys.map((key, idx) => (
+                    <p key={key} className={idx === 0 ? "name text-dark" : "text-muted"}>
+                      {row[key] || `No ${toLabel(key)}`}
+                    </p>
+                  ))}
+                </>
+              )}
             </div>
           </div>
 

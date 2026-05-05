@@ -5,10 +5,32 @@
 @import './views/statusTool.css';
 
 :root {
-  --font-size-base: 12px;
+  --font-size-sm: 10px;
+  --font-size-base: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
   --md-status-text: initial;
   --md-status-bg: initial;
   --md-status-border: initial;
+    /* TEXT */
+  --text-dark: #212529;
+  --text-base: #63634e;
+  --text-light: #888888;
+  --text-white: #ffffff;
+
+  /* BORDER */
+  --border-color: #e7e7e7;
+  --border-light: #e3e6ea;
+
+  /* SPACING */
+  --space-xs: 5px;
+  --space-sm: 8px;
+  --space-md: 15px;
+  --space-lg: 20px;
+
+  /* OPTIONAL (recommended for consistency) */
+  --radius-sm: 5px;
+  --radius-md: 8px;
 }
 
 .gnaric-font-size {
@@ -181,9 +203,10 @@
   justify-content: flex-start;
   flex-direction: row;
   gap: 10px;
+  font-size: var(--font-size-md);
   align-items: center;
   text-transform: capitalize;
-  color: var(--md-heading, #212529);
+  color: var(--md-heading, var (--text-dark));
 }
 
 .metrics-data .metrics-header .table-title i {
@@ -291,6 +314,7 @@
 .metrics-data .metrics-tag {
   border-radius: var(--md-radius, 8px);
   padding: 4px;
+  font-size: var(--font-size-sm);
   background: var(--md-card-bg, #ffffff);
   color: var(--md-text, #63634e);
   text-transform: uppercase;
@@ -444,10 +468,10 @@
 }
 
 .metrics-data .media-tile .media-img {
-
-  width: 35px;
-  height: 35px;
-  border-radius:5px ;
+border: 3px solid;
+  width: 40px;
+  height: 40px;
+  border-radius:10px ;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -456,8 +480,7 @@
   color: var(--md-surface, #ffffff);
   font-weight: bold;
 }
-.metrics-data .media-tile .media-img i {
-}
+
 
 .metrics-data .media-tile .media-img img {
   width: 100%;

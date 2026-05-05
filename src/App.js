@@ -1,5 +1,5 @@
 import './App.css';
-import { MetricsData } from './common/metrics-data/src';
+import { MetricsData } from './common/metrics-data';
 
 const statusMap = {
   completed: 'success',

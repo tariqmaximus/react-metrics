@@ -3,6 +3,7 @@
 @import './views/metrics-data.grid.css';
 @import './views/metrics-data.pipeline.css';
 @import './views/statusTool.css';
+@import '../views/metrics-data.filter.css';
 
 :root {
   --font-size-sm: 10px;

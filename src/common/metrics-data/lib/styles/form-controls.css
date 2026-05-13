@@ -1,0 +1,134 @@
+
+/* ─── Form Controls ────────────────────────────────────────── */
+
+ .metrics-btn,
+ .metrics-select,
+ .metrics-input {
+  border: 1px solid var(--md-border, #e7e7e7);
+  color: var(--md-text-muted, #888888);
+  padding: 0 10px;
+  outline: none;
+}
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.5rem;
+
+}
+ .metrics-btn:focus,
+ .metrics-select:focus,
+ .metrics-input:focus {
+  border-color: var(--md-border, #e7e7e7);
+  box-shadow: none;
+  color: var(--md-text, #63634e);
+}
+
+ .metrics-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  color: var(--md-text-muted, #888888);
+  background-color: var(--md-surface, #ffffff);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='20,40 70,90 120,40' stroke='%23333' stroke-width='15' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 0.75rem;
+  min-width: 150px;
+  cursor: pointer;
+}
+
+ .metrics-select option {
+  padding: 0.5rem;
+  background-color: var(--md-surface, #ffffff);
+  color: var(--md-text, #63634e);
+  border: 1px solid var(--md-border, #e7e7e7);
+}
+
+ .metrics-select:focus {
+  box-shadow: var(--md-focus-shadow, 0 0 0 2px rgba(0, 123, 255, 0.25));
+}
+
+/* ─── Button ───────────────────────────────────────────────── */
+
+ .metrics-btn {
+  background-color: var(--md-surface, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid var(--md-border, #e7e7e7);
+  color: var(--md-text, #63634e);
+}
+
+ .metrics-btn svg {
+  width: 14px;
+}
+
+ .metrics-btn i {
+  color: var(--md-text-muted, #888888);
+}
+
+ .metrics-btn span {
+  color: var(--md-text-muted, #888888);
+}
+
+ .metrics-btn:focus {
+  box-shadow: none;
+  background-color: var(--md-surface-alt, #f5f5f5);
+}
+
+ .metrics-btn:disabled {
+  border-color: var(--md-surface-alt, #f5f5f5);
+}
+
+ .metrics-btn:hover {
+  background-color: var(--md-surface-alt, #f5f5f5);
+}
+
+ .metrics-btn.no-bg {
+  border: none !important;
+}
+
+
+
+/* ─── Tags ─────────────────────────────────────────────────── */
+
+ .metrics-tag {
+  border-radius: var(--md-radius, 8px);
+  padding: 4px;
+  font-size: var(--font-size-sm);
+  background: var(--md-card-bg, #ffffff);
+  color: var(--md-text, #63634e);
+  text-transform: uppercase;
+  height: auto;
+  
+}
+ .metrics-tag .metrics-btn {
+  border: none;
+  background: none;
+
+}
+.active-filter-tag {
+  border-radius: var(--md-radius, 8px);
+  padding: 4px;
+  font-size: var(--font-size-sm);
+  background: var(--md-primary, #007bff);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 10px;
+   color:  #ffffff !important;
+  text-transform: uppercase;
+  height: auto;
+}
+
+.active-filter-tag .metrics-btn {
+  border: none;
+  background: none;
+  
+
+}
+.active-filter-tag .metrics-btn svg {
+  fill: #ffffff !important;
+}

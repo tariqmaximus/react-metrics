@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import './metrics-data.css';
+import './styles/metrics-data.css';
 
 let uniqueCounter = 0;
 

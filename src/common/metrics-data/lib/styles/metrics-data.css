@@ -1,8 +1,8 @@
 /* ─── IMPORTS ─────────────────────────────────────────────── */
-@import './views/metrics-data.table.css';
-@import './views/metrics-data.grid.css';
-@import './views/metrics-data.pipeline.css';
-@import './views/statusTool.css';
+@import './metrics-data.table.css';
+@import './metrics-data.grid.css';
+@import './metrics-data.pipeline.css';
+@import './statusTool.css';
 
 :root {
   --font-size-sm: 10px;

@@ -169,6 +169,41 @@ function App() {
         paginated
         showFooter
         pageSize={5}
+        filters={{
+          advanced: {
+            enabled: true,
+            fields: [
+              {
+                key: 'status',
+                label: 'Status',
+                type: 'select',
+                options: ['active', 'inactive', 'pending', 'completed', 'failed'],
+              },
+              {
+                key: 'name',
+                label: 'Name',
+                type: 'text',
+                placeholder: 'Search name...',
+              },
+              {
+                key: 'date',
+                label: 'Date',
+                type: 'date',
+              },
+              {
+                key: 'priority',
+                label: 'Priority',
+                type: 'radio',
+                options: ['low', 'medium', 'high'],
+              },
+            ],
+          },
+          custom: {
+            enabled: true,
+            fields: ['name', 'status', 'progress', 'date'],
+            operators: ['equals', 'notEquals', 'contains', 'startsWith', 'endsWith', 'greaterThan', 'lessThan'],
+          },
+        }}
         actionButtons={[
           {
             label: 'View',

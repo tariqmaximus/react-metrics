@@ -120,6 +120,7 @@ export default function MetricsData(props) {
     headerComponent = null,
     footerComponent = null,
     onRowAction = () => {},
+    filters = null,
   } = props;
 
   const sorting = sortingProp || Sorting;
@@ -138,6 +139,10 @@ export default function MetricsData(props) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [activeRowIndex, setActiveRowIndex] = useState(null);
   const [imageLoadFailedMap, setImageLoadFailedMap] = useState({});
+  const [advancedFilterValues, setAdvancedFilterValues] = useState({});
+  const [advancedFilterOpen, setAdvancedFilterOpen] = useState(false);
+  const [customFilterRules, setCustomFilterRules] = useState([]);
+  const [customFilterOpen, setCustomFilterOpen] = useState(false);
 
   const columns = useMemo(() => {
     let generated = Array.isArray(propColumns) ? propColumns : [];
@@ -168,6 +173,94 @@ export default function MetricsData(props) {
     return Array.from(new Set(data.map(item => item?.[filterBy]).filter(Boolean))).sort();
   }, [data, filterBy]);
 
+  // Helper function to apply advanced filters
+  const matchesAdvancedFilter = useMemo(() => (item) => {
+    if (!filters?.advanced?.enabled || !filters?.advanced?.fields?.length) return true;
+
+    return filters.advanced.fields.every(field => {
+      const value = advancedFilterValues[field.key];
+      if (value === undefined || value === null || value === '' || (Array.isArray(value) && value.length === 0)) return true;
+
+      const rowValue = item?.[field.key];
+
+      if (field.type === 'date') {
+        return rowValue && new Date(rowValue).toDateString() === new Date(value).toDateString();
+      }
+
+      if (field.type === 'number') {
+        return Number(rowValue) === Number(value);
+      }
+
+      if (field.type === 'checkbox') {
+        if (Array.isArray(value)) {
+          return value.includes(String(rowValue || ''));
+        }
+        return String(rowValue || '').toLowerCase() === String(value || '').toLowerCase();
+      }
+
+      if (field.type === 'radio' || field.type === 'select') {
+        return String(rowValue || '').toLowerCase() === String(value || '').toLowerCase();
+      }
+
+      // text, textarea, and default
+      return String(rowValue || '').toLowerCase().includes(String(value || '').toLowerCase());
+    });
+  }, [filters, advancedFilterValues]);
+
+  // Helper function to evaluate a single custom filter rule
+  const evaluateRule = (item, rule) => {
+    const { field, operator, value } = rule;
+    const rowValue = item?.[field];
+
+    if (!field || !operator || value === undefined || value === null) return true;
+
+    const rowStr = String(rowValue || '').toLowerCase();
+    const valueStr = String(value || '').toLowerCase();
+
+    switch (operator) {
+      case 'equals':
+        return rowStr === valueStr;
+      case 'notEquals':
+        return rowStr !== valueStr;
+      case 'contains':
+        return rowStr.includes(valueStr);
+      case 'startsWith':
+        return rowStr.startsWith(valueStr);
+      case 'endsWith':
+        return rowStr.endsWith(valueStr);
+      case 'greaterThan':
+        return Number(rowValue) > Number(value);
+      case 'lessThan':
+        return Number(rowValue) < Number(value);
+      default:
+        return true;
+    }
+  };
+
+  // Helper function to apply custom filters
+  const matchesCustomFilter = useMemo(() => (item) => {
+    if (!filters?.custom?.enabled || !customFilterRules.length) return true;
+
+    if (!customFilterRules.some(rule => rule.field && rule.operator && rule.value !== undefined && rule.value !== null)) {
+      return true;
+    }
+
+    let result = evaluateRule(item, customFilterRules[0]);
+
+    for (let i = 1; i < customFilterRules.length; i++) {
+      const condition = customFilterRules[i].condition || 'AND';
+      const ruleResult = evaluateRule(item, customFilterRules[i]);
+
+      if (condition === 'OR') {
+        result = result || ruleResult;
+      } else {
+        result = result && ruleResult;
+      }
+    }
+
+    return result;
+  }, [filters, customFilterRules]);
+
   const filteredData = useMemo(() => {
     const keyword = searchKeyword.trim().toLowerCase();
 
@@ -189,7 +282,10 @@ export default function MetricsData(props) {
           !item?.date ||
           new Date(item.date).toDateString() === selectedDate.toDateString();
 
-        return keywordMatch && optionMatch && dateMatch;
+        const advancedMatch = matchesAdvancedFilter(item);
+        const customMatch = matchesCustomFilter(item);
+
+        return keywordMatch && optionMatch && dateMatch && advancedMatch && customMatch;
       })
       .sort((a, b) => {
         if (!sortKey) return 0;
@@ -203,7 +299,8 @@ export default function MetricsData(props) {
 
         return sortAsc ? (aVal > bVal ? 1 : -1) : (aVal < bVal ? 1 : -1);
       });
-  }, [data, searchKeyword, selectedOption, filterBy, filterStyle, datePicker, selectedDate, sortKey, sortAsc]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, searchKeyword, selectedOption, filterBy, filterStyle, datePicker, selectedDate, sortKey, sortAsc, filters, advancedFilterValues, customFilterRules, matchesAdvancedFilter, matchesCustomFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
 
@@ -399,6 +496,269 @@ export default function MetricsData(props) {
 
   const selectDate = date => {
     setSelectedDate(date);
+  };
+
+  // Advanced Filter rendering
+  const renderAdvancedFilterField = (field) => {
+    const value = advancedFilterValues[field.key];
+
+    switch (field.type) {
+      case 'text':
+        return (
+          <input
+            key={field.key}
+            type="text"
+            className="metrics-input"
+            placeholder={field.placeholder || `Enter ${field.label}`}
+            value={value || ''}
+            onChange={e => setAdvancedFilterValues(prev => ({ ...prev, [field.key]: e.target.value }))}
+          />
+        );
+
+      case 'select':
+        return (
+          <select
+            key={field.key}
+            className="metrics-select"
+            value={value || ''}
+            onChange={e => setAdvancedFilterValues(prev => ({ ...prev, [field.key]: e.target.value }))}
+          >
+            <option value="">Select {field.label}</option>
+            {(field.options || []).map(opt => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+        );
+
+      case 'date':
+        return (
+          <input
+            key={field.key}
+            type="date"
+            className="metrics-input"
+            value={value || ''}
+            onChange={e => setAdvancedFilterValues(prev => ({ ...prev, [field.key]: e.target.value }))}
+          />
+        );
+
+      case 'checkbox':
+        return (
+          <div key={field.key} className="metrics-group gap">
+            <label className="text-muted">{field.label}</label>
+            <div>
+              {(field.options || []).map(opt => (
+                <div key={opt} className="checkbox-wrapper">
+                  <input
+                    className="inp-cbx"
+                    id={`${internalIdPrefix}-adv-cbx-${field.key}-${opt}`}
+                    type="checkbox"
+                    checked={(Array.isArray(value) && value.includes(opt)) || false}
+                    onChange={e => {
+                      const newValue = Array.isArray(value) ? [...value] : [];
+                      if (e.target.checked) {
+                        newValue.push(opt);
+                      } else {
+                        newValue.splice(newValue.indexOf(opt), 1);
+                      }
+                      setAdvancedFilterValues(prev => ({ ...prev, [field.key]: newValue }));
+                    }}
+                  />
+                  <label className="cbx" htmlFor={`${internalIdPrefix}-adv-cbx-${field.key}-${opt}`}>
+                    {opt}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'radio':
+        return (
+          <div key={field.key} className="metrics-group gap">
+            <label className="text-muted">{field.label}</label>
+            <div>
+              {(field.options || []).map(opt => (
+                <div key={opt} style={{ marginBottom: '8px' }}>
+                  <input
+                    className="inp-cbx"
+                    id={`${internalIdPrefix}-adv-radio-${field.key}-${opt}`}
+                    type="radio"
+                    name={`adv-radio-${field.key}`}
+                    checked={value === opt}
+                    onChange={() => setAdvancedFilterValues(prev => ({ ...prev, [field.key]: opt }))}
+                  />
+                  <label className="cbx" htmlFor={`${internalIdPrefix}-adv-radio-${field.key}-${opt}`}>
+                    {opt}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'textarea':
+        return (
+          <textarea
+            key={field.key}
+            className="metrics-input"
+            placeholder={field.placeholder || `Enter ${field.label}`}
+            value={value || ''}
+            onChange={e => setAdvancedFilterValues(prev => ({ ...prev, [field.key]: e.target.value }))}
+            rows={field.rows || 3}
+            style={{ resize: 'vertical' }}
+          />
+        );
+
+      case 'number':
+        return (
+          <input
+            key={field.key}
+            type="number"
+            className="metrics-input"
+            placeholder={field.placeholder || `Enter ${field.label}`}
+            value={value || ''}
+            onChange={e => setAdvancedFilterValues(prev => ({ ...prev, [field.key]: e.target.value }))}
+            min={field.min}
+            max={field.max}
+            step={field.step}
+          />
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  // Custom Filter rendering - render a single rule
+  const renderCustomFilterRule = (rule, index) => {
+    return (
+      <div key={index} className="metrics-group gap" style={{ marginBottom: '12px', flexDirection: 'column', alignItems: 'flex-start' }}>
+        {index > 0 && (
+          <div className="metrics-group gap" style={{ marginBottom: '8px' }}>
+            <label className="text-muted" style={{ fontSize: '12px', marginRight: '8px' }}>Condition:</label>
+            <div className="metrics-group gap">
+              <div className="checkbox-wrapper">
+                <input
+                  className="inp-cbx"
+                  id={`condition-and-${index}`}
+                  type="radio"
+                  name={`condition-${index}`}
+                  checked={rule.condition === 'AND'}
+                  onChange={() => {
+                    const newRules = [...customFilterRules];
+                    newRules[index] = { ...rule, condition: 'AND' };
+                    setCustomFilterRules(newRules);
+                  }}
+                />
+                <label className="cbx" htmlFor={`condition-and-${index}`}>
+                  AND
+                </label>
+              </div>
+              <div className="checkbox-wrapper">
+                <input
+                  className="inp-cbx"
+                  id={`condition-or-${index}`}
+                  type="radio"
+                  name={`condition-${index}`}
+                  checked={rule.condition === 'OR'}
+                  onChange={() => {
+                    const newRules = [...customFilterRules];
+                    newRules[index] = { ...rule, condition: 'OR' };
+                    setCustomFilterRules(newRules);
+                  }}
+                />
+                <label className="cbx" htmlFor={`condition-or-${index}`}>
+                  OR
+                </label>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="metrics-group gap" style={{ width: '100%', flexWrap: 'wrap' }}>
+          <div style={{ minWidth: '200px' }}>
+            <label className="text-muted" style={{ fontSize: '12px', display: 'block', marginBottom: '4px' }}>Field:</label>
+            <div className="metrics-group gap" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+              {(filters?.custom?.fields || []).map(fieldName => (
+                <div key={fieldName} className="checkbox-wrapper">
+                  <input
+                    className="inp-cbx"
+                    id={`field-${fieldName}-${index}`}
+                    type="radio"
+                    name={`field-${index}`}
+                    checked={rule.field === fieldName}
+                    onChange={() => {
+                      const newRules = [...customFilterRules];
+                      newRules[index] = { ...rule, field: fieldName };
+                      setCustomFilterRules(newRules);
+                    }}
+                  />
+                  <label className="cbx" htmlFor={`field-${fieldName}-${index}`}>
+                    {toLabel(fieldName)}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ minWidth: '200px' }}>
+            <label className="text-muted" style={{ fontSize: '12px', display: 'block', marginBottom: '4px' }}>Operator:</label>
+            <div className="metrics-group gap" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+              {(filters?.custom?.operators || ['equals', 'contains']).map(op => (
+                <div key={op} className="checkbox-wrapper">
+                  <input
+                    className="inp-cbx"
+                    id={`operator-${op}-${index}`}
+                    type="radio"
+                    name={`operator-${index}`}
+                    checked={rule.operator === op}
+                    onChange={() => {
+                      const newRules = [...customFilterRules];
+                      newRules[index] = { ...rule, operator: op };
+                      setCustomFilterRules(newRules);
+                    }}
+                  />
+                  <label className="cbx" htmlFor={`operator-${op}-${index}`}>
+                    {toLabel(op)}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ minWidth: '200px' }}>
+            <label className="text-muted" style={{ fontSize: '12px', display: 'block', marginBottom: '4px' }}>Value:</label>
+            <input
+              type="text"
+              className="metrics-input"
+              placeholder="Enter value"
+              value={rule.value || ''}
+              onChange={e => {
+                const newRules = [...customFilterRules];
+                newRules[index] = { ...rule, value: e.target.value };
+                setCustomFilterRules(newRules);
+              }}
+              style={{ width: '100%' }}
+            />
+          </div>
+
+          {customFilterRules.length > 1 && (
+            <div style={{ alignSelf: 'flex-end' }}>
+              <button
+                className="metrics-btn"
+                type="button"
+                onClick={() => setCustomFilterRules(customFilterRules.filter((_, i) => i !== index))}
+                style={{ minWidth: 'auto', padding: '6px 12px' }}
+              >
+                ✕
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   const renderCheckbox = ({ id, checked, onChange, children }) => (
@@ -1042,6 +1402,31 @@ export default function MetricsData(props) {
                   {viewButtons.map((button, index) => renderHeaderButton(button, index, 'view'))}
                 </div>
 
+                {(filters?.advanced?.enabled || filters?.custom?.enabled) && (
+                  <div className="metrics-btn-group">
+                    {filters?.advanced?.enabled && (
+                      <button
+                        className="metrics-btn"
+                        type="button"
+                        title="Advanced Filter"
+                        onClick={() => setAdvancedFilterOpen(true)}
+                      >
+                        🔧 Advanced
+                      </button>
+                    )}
+                    {filters?.custom?.enabled && (
+                      <button
+                        className="metrics-btn"
+                        type="button"
+                        title="Custom Filter"
+                        onClick={() => setCustomFilterOpen(true)}
+                      >
+                        ⚙️ Custom
+                      </button>
+                    )}
+                  </div>
+                )}
+
                 <div className="metrics-btn-group">
                   {headerButtons.map((button, index) => renderHeaderButton(button, index, 'header'))}
                 </div>
@@ -1078,6 +1463,96 @@ export default function MetricsData(props) {
       )}
 
       <div className={`metrics-body view-${currentViewType}`}>{renderCurrentTemplate()}</div>
+
+      {/* Advanced Filter Panel */}
+      {advancedFilterOpen && filters?.advanced?.enabled && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 1000, display: 'flex', justifyContent: 'flex-end' }} onClick={() => setAdvancedFilterOpen(false)}>
+          <div style={{ backgroundColor: 'white', width: '100%', maxWidth: '400px', overflowY: 'auto', boxShadow: '-2px 0 8px rgba(0,0,0,0.15)' }} onClick={e => e.stopPropagation()}>
+            <div className="metrics-header" style={{ padding: '16px', borderBottom: '1px solid var(--md-border)' }}>
+              <h6 className="table-title">Advanced Filter</h6>
+              <button className="metrics-btn" type="button" onClick={() => setAdvancedFilterOpen(false)} style={{ float: 'right', padding: '4px 8px' }}>
+                ✕
+              </button>
+            </div>
+            <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {filters?.advanced?.fields?.map(field => (
+                <div key={field.key}>
+                  <label className="text-muted" style={{ display: 'block', marginBottom: '6px', fontSize: '12px', fontWeight: '600' }}>
+                    {field.label}
+                  </label>
+                  {renderAdvancedFilterField(field)}
+                </div>
+              ))}
+              <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                <button
+                  className="metrics-btn primary"
+                  type="button"
+                  onClick={() => {
+                    setAdvancedFilterOpen(false);
+                  }}
+                >
+                  Apply
+                </button>
+                <button
+                  className="metrics-btn"
+                  type="button"
+                  onClick={() => {
+                    setAdvancedFilterValues({});
+                    setAdvancedFilterOpen(false);
+                  }}
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Filter Panel */}
+      {customFilterOpen && filters?.custom?.enabled && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 1000, display: 'flex', justifyContent: 'flex-end' }} onClick={() => setCustomFilterOpen(false)}>
+          <div style={{ backgroundColor: 'white', width: '100%', maxWidth: '800px', overflowY: 'auto', boxShadow: '-2px 0 8px rgba(0,0,0,0.15)' }} onClick={e => e.stopPropagation()}>
+            <div className="metrics-header" style={{ padding: '16px', borderBottom: '1px solid var(--md-border)' }}>
+              <h6 className="table-title">Custom Filter</h6>
+              <button className="metrics-btn" type="button" onClick={() => setCustomFilterOpen(false)} style={{ float: 'right', padding: '4px 8px' }}>
+                ✕
+              </button>
+            </div>
+            <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {customFilterRules.map((rule, index) => renderCustomFilterRule(rule, index))}
+              <button
+                className="metrics-btn"
+                type="button"
+                onClick={() => setCustomFilterRules([...customFilterRules, { field: '', operator: '', value: '', condition: 'AND' }])}
+              >
+                + Add Rule
+              </button>
+              <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                <button
+                  className="metrics-btn primary"
+                  type="button"
+                  onClick={() => {
+                    setCustomFilterOpen(false);
+                  }}
+                >
+                  Apply
+                </button>
+                <button
+                  className="metrics-btn"
+                  type="button"
+                  onClick={() => {
+                    setCustomFilterRules([]);
+                    setCustomFilterOpen(false);
+                  }}
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showFooter && footerComponent && <div className="metrics-footer">{footerComponent}</div>}
     </div>

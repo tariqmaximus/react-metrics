@@ -42,6 +42,7 @@ const dummyData = [
     status: 'completed',
     progress: 92,
     date: '2026-04-12',
+    priority: 'High',
     description: 'Monthly campaign pipeline review.',
   },
   {
@@ -51,6 +52,7 @@ const dummyData = [
     status: 'inprogress',
     progress: 65,
     date: '2026-04-10',
+    priority: 'Medium',
     description: 'Improving sales funnel performance.',
   },
   {
@@ -60,6 +62,7 @@ const dummyData = [
     status: 'pending',
     progress: 30,
     date: '2026-04-08',
+    priority: 'High',
     description: 'Revamping dashboard interface.',
   },
   {
@@ -69,6 +72,7 @@ const dummyData = [
     status: 'inprogress',
     progress: 55,
     date: '2026-04-15',
+    priority: 'Low',
     description: 'Migrating services to new server.',
   },
   {
@@ -78,6 +82,7 @@ const dummyData = [
     status: 'completed',
     progress: 100,
     date: '2026-04-05',
+    priority: 'Medium',
     description: 'Website SEO performance review.',
   },
   {
@@ -87,6 +92,7 @@ const dummyData = [
     status: 'pending',
     progress: 20,
     date: '2026-04-18',
+    priority: 'High',
     description: 'New client onboarding process.',
   },
   {
@@ -96,6 +102,7 @@ const dummyData = [
     status: 'inprogress',
     progress: 75,
     date: '2026-04-11',
+    priority: 'Medium',
     description: 'Testing mobile app features.',
   },
   {
@@ -105,6 +112,7 @@ const dummyData = [
     status: 'completed',
     progress: 88,
     date: '2026-04-07',
+    priority: 'Low',
     description: 'Planning blog and social content.',
   },
   {
@@ -114,6 +122,7 @@ const dummyData = [
     status: 'inprogress',
     progress: 60,
     date: '2026-04-20',
+    priority: 'High',
     description: 'System security checks.',
   },
   {
@@ -123,6 +132,7 @@ const dummyData = [
     status: 'completed',
     progress: 95,
     date: '2026-04-03',
+    priority: 'Medium',
     description: 'Launching email marketing campaign.',
   },
   
@@ -169,6 +179,38 @@ function App() {
         paginated
         showFooter
         pageSize={5}
+        customFilter={{
+          title: 'Advanced Filter',
+          button: {
+            icon: 'bi bi-filter',
+            tooltip: 'Open advanced filter',
+          },
+          fields: [
+            {
+              key: 'status',
+              label: 'Status',
+              type: 'checkbox',
+            },
+            {
+              key: 'source',
+              label: 'Source',
+              type: 'radio',
+            },
+            {
+              key: 'priority',
+              label: 'Priority',
+              type: 'select',
+              options: ['High', 'Medium', 'Low'],
+            },
+            {
+              key: 'date',
+              label: 'Date',
+              type: 'date',
+            },
+          ],
+          onApply: (filters) => console.log('Custom filter applied', filters),
+          onReset: (filters) => console.log('Custom filter reset', filters),
+        }}
         actionButtons={[
           {
             label: 'View',

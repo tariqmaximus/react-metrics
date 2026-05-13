@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './metrics-data.css';
+import FilterComponent from './FilterComponent';
 
 let uniqueCounter = 0;
 
@@ -16,6 +17,14 @@ function CalendarIcon() {
   return (
     <svg fill="currentColor" className="bi bi-calendar" viewBox="0 0 16 16" width="16" height="16">
       <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
+    </svg>
+  );
+}
+
+function FilterIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+      <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5" />
     </svg>
   );
 }
@@ -120,6 +129,7 @@ export default function MetricsData(props) {
     headerComponent = null,
     footerComponent = null,
     onRowAction = () => {},
+    customFilter = null,
   } = props;
 
   const sorting = sortingProp || Sorting;
@@ -138,6 +148,8 @@ export default function MetricsData(props) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [activeRowIndex, setActiveRowIndex] = useState(null);
   const [imageLoadFailedMap, setImageLoadFailedMap] = useState({});
+  const [customFilterOpen, setCustomFilterOpen] = useState(false);
+  const [customFilterValues, setCustomFilterValues] = useState(() => customFilter?.initialValues || {});
 
   const columns = useMemo(() => {
     let generated = Array.isArray(propColumns) ? propColumns : [];
@@ -189,7 +201,29 @@ export default function MetricsData(props) {
           !item?.date ||
           new Date(item.date).toDateString() === selectedDate.toDateString();
 
-        return keywordMatch && optionMatch && dateMatch;
+        const customFilterMatch = !customFilter?.fields || !Array.isArray(customFilter.fields)
+          ? true
+          : customFilter.fields.every(field => {
+              const filterValue = customFilterValues?.[field.key];
+              if (filterValue === undefined || filterValue === null || filterValue === '') return true;
+
+              const rowValue = item?.[field.key];
+              if (field.type === 'date') {
+                return rowValue && new Date(rowValue).toDateString() === new Date(filterValue).toDateString();
+              }
+
+              if (field.type === 'number') {
+                return Number(rowValue) === Number(filterValue);
+              }
+
+              if (field.type === 'select') {
+                return String(rowValue) === String(filterValue);
+              }
+
+              return String(rowValue || '').toLowerCase().includes(String(filterValue || '').toLowerCase());
+            });
+
+        return keywordMatch && optionMatch && dateMatch && customFilterMatch;
       })
       .sort((a, b) => {
         if (!sortKey) return 0;
@@ -203,7 +237,7 @@ export default function MetricsData(props) {
 
         return sortAsc ? (aVal > bVal ? 1 : -1) : (aVal < bVal ? 1 : -1);
       });
-  }, [data, searchKeyword, selectedOption, filterBy, filterStyle, datePicker, selectedDate, sortKey, sortAsc]);
+  }, [data, searchKeyword, selectedOption, filterBy, filterStyle, datePicker, selectedDate, sortKey, sortAsc, customFilter, customFilterValues]);
 
   const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
 
@@ -277,6 +311,10 @@ export default function MetricsData(props) {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchKeyword, selectedOption, selectedDate]);
+
+  useEffect(() => {
+    setCustomFilterValues(customFilter?.initialValues || {});
+  }, [customFilter?.initialValues]);
 
   const getStatusTheme = status => {
     const key = String(status || '').toLowerCase().trim();
@@ -1042,6 +1080,20 @@ export default function MetricsData(props) {
                   {viewButtons.map((button, index) => renderHeaderButton(button, index, 'view'))}
                 </div>
 
+                {customFilter && (
+                  <div className="metrics-btn-group">
+                    <button
+                      className={`metrics-btn ${customFilter.button?.className || ''}`.trim()}
+                      type="button"
+                      title={customFilter.button?.tooltip || 'Open custom filter'}
+                      onClick={() => setCustomFilterOpen(true)}
+                    >
+                      {customFilter.button?.icon ? <i className={customFilter.button.icon} /> : <FilterIcon />}
+                      {customFilter.button?.label && <span>{customFilter.button.label}</span>}
+                    </button>
+                  </div>
+                )}
+
                 <div className="metrics-btn-group">
                   {headerButtons.map((button, index) => renderHeaderButton(button, index, 'header'))}
                 </div>
@@ -1080,6 +1132,36 @@ export default function MetricsData(props) {
       <div className={`metrics-body view-${currentViewType}`}>{renderCurrentTemplate()}</div>
 
       {showFooter && footerComponent && <div className="metrics-footer">{footerComponent}</div>}
+
+      {customFilter && customFilterOpen && (
+        <div className="filter-slide-backdrop" onClick={() => setCustomFilterOpen(false)}>
+          <div className="filter-slide-panel" onClick={event => event.stopPropagation()}>
+            <div className="filter-slide-header">
+              <h5>{customFilter.title || 'Advanced Filter'}</h5>
+              <button className="filter-close-btn" type="button" onClick={() => setCustomFilterOpen(false)}>
+                ×
+              </button>
+            </div>
+            <div className="filter-slide-body">
+              <FilterComponent
+                data={data}
+                onApply={(filters) => {
+                  setCustomFilterValues(filters);
+                  customFilter?.onApply?.(filters);
+                  setCustomFilterOpen(false);
+                }}
+                onReset={(filters) => {
+                  setCustomFilterValues(filters);
+                  customFilter?.onReset?.(filters);
+                }}
+                initialFilters={customFilterValues}
+                theme={theme}
+                idPrefix={internalIdPrefix}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

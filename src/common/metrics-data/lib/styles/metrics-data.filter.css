@@ -89,7 +89,11 @@ border-radius: 0 0 var(--sm-radius, 5px) var(--sm-radius, 5px);
   border-top:1px solid var(--md-border);
   left: 0;
   right: 0;
-  padding: 1rem;
+  padding:0 var(--space-base, 10px);
+  height: var(--filter-footer-height, 70px);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
 }
 .filter-component {
   max-height: none;
@@ -99,6 +103,7 @@ border-radius: 0 0 var(--sm-radius, 5px) var(--sm-radius, 5px);
   gap: 20px;
   display: flex;
   flex-direction: column;
+padding-bottom: calc(var(--filter-footer-height, 70px) + var(--space-lg, 15px));
 }
 
 

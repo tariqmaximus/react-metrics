@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import './metrics-data.css';
+import './styles/metrics-data.css';
 
 function ChevronDownIcon() {
   return (

@@ -1,7 +1,18 @@
+.metrics-fieldset {
 
+  padding: 0;
+  border-radius: var(--md-radius, 8px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
 
 /* ─── Checkbox ─────────────────────────────────────────────── */
-
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
  .metrics-checkbox {
   padding: 0;
   display: flex;
@@ -77,6 +88,79 @@
   transition: all 0.3s ease;
 }
 
+/* ─── Radio ─────────────────────────────────────────────── */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+ .metrics-radio {
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+ .metrics-radio .radio-label {
+  user-select: none;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 55px;
+  cursor: pointer;
+}
+
+ .metrics-radio .radio-label .radio {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--md-border, #e7e7e7);
+  transition: all 0.2s ease;
+}
+
+ .metrics-radio .radio-label .radio svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  fill: white;
+  opacity: 0;
+  transition: all 0.3s ease;
+  transition-delay: 0.1s;
+}
+
+ .metrics-radio .radio-label .radio:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  transform: scale(0);
+  opacity: 1;
+  border-radius: 50%;
+  transition-delay: 0.2s;
+}
+
+ .metrics-radio .inp-radio {
+  display: none;
+}
+
+ .metrics-radio .inp-radio:checked + .radio-label .radio:first-child {
+  border-color: var(--md-primary, #0173df);
+  background: var(--md-primary, #0173df);
+}
+
+ .metrics-radio .inp-radio:checked + .radio-label .radio:first-child svg {
+  opacity: 1;
+}
+
+ .metrics-radio .inp-radio:checked + .radio-label .radio:first-child:before {
+  transform: scale(2.2);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
 /* ─── Form Controls ────────────────────────────────────────── */
 
  .metrics-btn,
@@ -85,6 +169,7 @@
   border: 1px solid var(--md-border, #e7e7e7);
   color: var(--md-text-muted, #888888);
   padding: 0 10px;
+  height: var(--input-height, 30px);
   outline: none;
 }
 
@@ -171,21 +256,32 @@
   background: var(--md-card-bg, #ffffff);
   color: var(--md-text, #63634e);
   text-transform: uppercase;
-
   height: auto;
- 
+  width: fit-content;
+  gap: var(--space-sm, 5px);
+
+ display: flex;
   align-items: center;
   justify-content: center;
 }
  .metrics-tag .metrics-btn {
 padding: 0;
 border: none;
+cursor: pointer;
+height: auto;
  }
-  .metrics-tag .wrap {
-  
+ 
+ .metrics-tag.primary {
+  background-color: var(--md-primary, #0173df);
+  color: white;
  }
-
-
+ .metrics-tag.primary .metrics-btn {
+  color: white;
+  background:none;
+ }
+ .metrics-tag.primary .metrics-btn svg {
+  fill: white;
+ }
 /* ─── Progress Bar ─────────────────────────────────────────── */
 
  .progress {

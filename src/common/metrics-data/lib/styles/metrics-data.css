@@ -45,6 +45,19 @@
   display: flex;
   align-items: stretch;
 }
+.metrics-group.gap-sm {
+  gap: var(--space-sm, 8px);
+}
+.metrics-group.gap-md {
+  gap: var(--space-md, 15px);
+}
+.metrics-group.gap-lg {
+  gap: var(--space-lg, 20px);
+}
+.metrics-group.wrap {
+  flex-wrap: wrap;
+  gap: var(--space-ssm, 2px);
+ }
 
 .metrics-group.gap {
   gap: 10px;

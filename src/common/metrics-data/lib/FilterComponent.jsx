@@ -139,9 +139,10 @@ export default function FilterComponent({
   };
 
   const renderSearchSection = () => (
-    <div className="filter-section">
+    <div className="metrics-accodian-section">
+      
       <button
-        className="metrics-accodian"
+        className="metrics-accodian-btn"
         onClick={() => toggleSection('search')}
         aria-expanded={expandedSections.search}
         aria-controls={`${idPrefix}-search-panel`}
@@ -150,9 +151,10 @@ export default function FilterComponent({
         {expandedSections.search ? <ChevronUpIcon /> : <ChevronDownIcon />}
       </button>
       {expandedSections.search && (
-        <div id={`${idPrefix}-search-panel`} className="metrics-container">
-          <div className="metrics-group">
+        <div id={`${idPrefix}-search-panel`} className="accordian-body">
+         
             <label htmlFor={`${idPrefix}-search`}>Keyword Search</label>
+            
             <input
               id={`${idPrefix}-search`}
               type="text"
@@ -162,19 +164,20 @@ export default function FilterComponent({
               onChange={(e) => updateFilter('search', e.target.value)}
               aria-describedby={`${idPrefix}-search-help`}
             />
+            
             <small id={`${idPrefix}-search-help`} className="text-muted">
               Case-insensitive search in all fields
             </small>
-          </div>
+          
         </div>
       )}
     </div>
   );
 
   const renderCheckboxSection = () => (
-    <div className="filter-section">
+    <div className="metrics-accodian-section">
       <button
-        className="metrics-accodian"
+        className="metrics-accodian-btn"
         onClick={() => toggleSection('checkboxes')}
         aria-expanded={expandedSections.checkboxes}
         aria-controls={`${idPrefix}-checkboxes-panel`}
@@ -183,10 +186,10 @@ export default function FilterComponent({
         {expandedSections.checkboxes ? <ChevronUpIcon /> : <ChevronDownIcon />}
       </button>
       {expandedSections.checkboxes && (
-        <div id={`${idPrefix}-checkboxes-panel`} className="metrics-container">
+        <div id={`${idPrefix}-checkboxes-panel`} className="accordian-body">
           {Object.entries(filterOptions.checkboxes).map(([field, options]) => (
-            <div key={field} className="metrics-group">
-              <label className="metrics-group-label">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+            <div key={field} >
+              <label className="metrics-fieldset gap-sm-label">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
               <div className="checkbox-group" role="group" aria-labelledby={`${idPrefix}-checkbox-${field}`}>
                 {options.map(option => (
                   <div key={option} className="metrics-checkbox">
@@ -217,9 +220,9 @@ export default function FilterComponent({
   );
 
   const renderRadioSection = () => (
-    <div className="filter-section">
+    <div className="metrics-accodian-section">
       <button
-        className="metrics-accodian"
+        className="metrics-accodian-btn"
         onClick={() => toggleSection('radios')}
         aria-expanded={expandedSections.radios}
         aria-controls={`${idPrefix}-radios-panel`}
@@ -228,24 +231,32 @@ export default function FilterComponent({
         {expandedSections.radios ? <ChevronUpIcon /> : <ChevronDownIcon />}
       </button>
       {expandedSections.radios && (
-        <div id={`${idPrefix}-radios-panel`} className="metrics-container">
+        <div id={`${idPrefix}-radios-panel`} className="accordian-body">
           {Object.entries(filterOptions.radios).map(([field, options]) => (
-            <div key={field} className="metrics-group">
-              <label className="metrics-group-label">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+            <div key={field} >
+              <label className="metrics-fieldset gap-sm-label">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
               <div className="radio-group" role="radiogroup" aria-labelledby={`${idPrefix}-radio-${field}`}>
                 {options.map(option => (
-                  <label key={option} className="radio-item">
+                  <div key={option} className="metrics-radio">
                     <input
+                      className="inp-radio"
+                      id={`${idPrefix}-radio-${field}-${option}`}
                       type="radio"
                       name={`${idPrefix}-radio-${field}`}
                       value={option}
                       checked={filters.radios[field] === option}
                       onChange={() => selectRadio(field, option)}
-                      aria-describedby={`${idPrefix}-radio-${field}-${option}`}
+                      aria-describedby={`${idPrefix}-radio-${field}-${option}-label`}
                     />
-                    <span className="radio-checkmark"></span>
-                    <span id={`${idPrefix}-radio-${field}-${option}`}>{option}</span>
-                  </label>
+                    <label className="radio-label" htmlFor={`${idPrefix}-radio-${field}-${option}`}>
+                      <div className="radio">
+                        <svg width="8" height="8" viewBox="0 0 8 8">
+                          <circle cx="4" cy="4" r="4" />
+                        </svg>
+                      </div>
+                      <span id={`${idPrefix}-radio-${field}-${option}-label`}>{option}</span>
+                    </label>
+                  </div>
                 ))}
               </div>
             </div>
@@ -256,9 +267,9 @@ export default function FilterComponent({
   );
 
   const renderDropdownSection = () => (
-    <div className="filter-section">
+    <div className="metrics-accodian-section">
       <button
-        className="metrics-accodian"
+        className="metrics-accodian-btn"
         onClick={() => toggleSection('dropdowns')}
         aria-expanded={expandedSections.dropdowns}
         aria-controls={`${idPrefix}-dropdowns-panel`}
@@ -267,9 +278,9 @@ export default function FilterComponent({
         {expandedSections.dropdowns ? <ChevronUpIcon /> : <ChevronDownIcon />}
       </button>
       {expandedSections.dropdowns && (
-        <div id={`${idPrefix}-dropdowns-panel`} className="metrics-container">
+        <div id={`${idPrefix}-dropdowns-panel`} className="accordian-body">
           {Object.entries(filterOptions.dropdowns).map(([field, options]) => (
-            <div key={field} className="metrics-group">
+            <div key={field} className="metrics-fieldset gap-sm">
               <label htmlFor={`${idPrefix}-dropdown-${field}`}>
                 {field.charAt(0).toUpperCase() + field.slice(1)}
               </label>
@@ -292,9 +303,9 @@ export default function FilterComponent({
   );
 
   const renderDateRangeSection = () => (
-    <div className="filter-section">
+    <div className="metrics-accodian-section">
       <button
-        className="metrics-accodian"
+        className="metrics-accodian-btn"
         onClick={() => toggleSection('dateRange')}
         aria-expanded={expandedSections.dateRange}
         aria-controls={`${idPrefix}-daterange-panel`}
@@ -303,8 +314,8 @@ export default function FilterComponent({
         {expandedSections.dateRange ? <ChevronUpIcon /> : <ChevronDownIcon />}
       </button>
       {expandedSections.dateRange && (
-        <div id={`${idPrefix}-daterange-panel`} className="metrics-container">
-          <div className="metrics-group">
+        <div id={`${idPrefix}-daterange-panel`} className="accordian-body">
+          <div className="metrics-fieldset gap-sm">
             <label htmlFor={`${idPrefix}-date-from`}>From Date</label>
             <input
               id={`${idPrefix}-date-from`}
@@ -314,7 +325,7 @@ export default function FilterComponent({
               onChange={(e) => updateDateRange('from', e.target.value)}
             />
           </div>
-          <div className="metrics-group">
+          <div className="metrics-fieldset gap-sm">
             <label htmlFor={`${idPrefix}-date-to`}>To Date</label>
             <input
               id={`${idPrefix}-date-to`}
@@ -338,9 +349,9 @@ export default function FilterComponent({
         <span className="active-filters-label">
           Active Filters ({activeCount}):
         </span>
-        <div className="metrics-group wrap">
+        <div className="metrics-fieldset gap-sm wrap">
           {filters.search && (
-            <span className="metrics-tag">
+            <span className="metrics-tag primary">
               Search: "{filters.search}"
               <button
                 className="metrics-btn"
@@ -353,7 +364,7 @@ export default function FilterComponent({
           )}
           {Object.entries(filters.checkboxes).map(([field, values]) =>
             values.map(value => (
-              <span key={`${field}-${value}`} className="metrics-tag">
+              <span key={`${field}-${value}`} className="metrics-tag primary">
                 {field}: {value}
                 <button
                   className="metrics-btn"
@@ -420,13 +431,13 @@ export default function FilterComponent({
       '--md-primary': theme.primary || '#0173df',
     }}>
       {renderActiveFilters()}
-      <div className="filter-sections">
+     
         {renderSearchSection()}
         {renderCheckboxSection()}
         {renderRadioSection()}
         {renderDropdownSection()}
         {renderDateRangeSection()}
-      </div>
+    
       <div className="metrics-btn-group">
         <button className="metrics-btn" onClick={resetFilters}>
           Reset Filters

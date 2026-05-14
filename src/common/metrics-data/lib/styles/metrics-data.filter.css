@@ -92,6 +92,7 @@ border-radius: 0 0 var(--sm-radius, 5px) var(--sm-radius, 5px);
   padding:0 var(--space-base, 10px);
   height: var(--filter-footer-height, 70px);
   display: flex;
+  justify-content: flex-end;
   align-items: center;
   box-sizing: border-box;
 }
@@ -102,6 +103,7 @@ border-radius: 0 0 var(--sm-radius, 5px) var(--sm-radius, 5px);
   background: var(--bg-color, #f1f1f1);
   gap: 20px;
   display: flex;
+  min-height: 100%;
   flex-direction: column;
 padding-bottom: calc(var(--filter-footer-height, 70px) + var(--space-lg, 15px));
 }

@@ -1,5 +1,5 @@
 import './App.css';
-import { MetricsData } from './common/metrics-data';
+import { MetricsData } from './common/metrics-data/lib';
 
 const statusMap = {
   pending: {

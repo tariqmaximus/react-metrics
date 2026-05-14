@@ -1,0 +1,216 @@
+
+
+/* ─── Checkbox ─────────────────────────────────────────────── */
+
+ .metrics-checkbox {
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+ .metrics-checkbox .cbx {
+  user-select: none;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 55px;
+  cursor: pointer;
+}
+
+ .metrics-checkbox .cbx .metrics-btn {
+  padding: 0;
+  height: auto;
+}
+
+ .metrics-checkbox .cbx .checkbox {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 2px solid var(--md-border, #e7e7e7);
+  transition: all 0.2s ease;
+}
+
+ .metrics-checkbox .cbx .checkbox svg {
+  position: absolute;
+  top: 4px;
+  left: 2px;
+  fill: none;
+  stroke: white;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 16px;
+  stroke-dashoffset: 16px;
+  transition: all 0.3s ease;
+  transition-delay: 0.1s;
+}
+
+ .metrics-checkbox .cbx .checkbox:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  transform: scale(0);
+  opacity: 1;
+  border-radius: 50%;
+  transition-delay: 0.2s;
+}
+
+ .metrics-checkbox .inp-cbx {
+  display: none;
+}
+
+ .metrics-checkbox .inp-cbx:checked + .cbx .checkbox:first-child {
+  border-color: var(--md-primary, #0173df);
+  background: var(--md-primary, #0173df);
+  animation: check-15 0.3s ease;
+}
+
+ .metrics-checkbox .inp-cbx:checked + .cbx .checkbox:first-child svg {
+  stroke-dashoffset: 0;
+}
+
+ .metrics-checkbox .inp-cbx:checked + .cbx .checkbox:first-child:before {
+  transform: scale(2.2);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+/* ─── Form Controls ────────────────────────────────────────── */
+
+ .metrics-btn,
+ .metrics-select,
+ .metrics-input {
+  border: 1px solid var(--md-border, #e7e7e7);
+  color: var(--md-text-muted, #888888);
+  padding: 0 10px;
+  outline: none;
+}
+
+ .metrics-btn:focus,
+ .metrics-select:focus,
+ .metrics-input:focus {
+  border-color: var(--md-border, #e7e7e7);
+  box-shadow: none;
+  color: var(--md-text, #63634e);
+}
+
+ .metrics-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  color: var(--md-text-muted, #888888);
+  background-color: var(--md-surface, #ffffff);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='20,40 70,90 120,40' stroke='%23333' stroke-width='15' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 0.75rem;
+  min-width: 150px;
+  cursor: pointer;
+}
+
+ .metrics-select option {
+  padding: 0.5rem;
+  background-color: var(--md-surface, #ffffff);
+  color: var(--md-text, #63634e);
+  border: 1px solid var(--md-border, #e7e7e7);
+}
+
+ .metrics-select:focus {
+  box-shadow: var(--md-focus-shadow, 0 0 0 2px rgba(0, 123, 255, 0.25));
+}
+
+/* ─── Button ───────────────────────────────────────────────── */
+
+ .metrics-btn {
+  background-color: var(--md-surface, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid var(--md-border, #e7e7e7);
+  color: var(--md-text, #63634e);
+}
+
+ .metrics-btn svg {
+  width: 14px;
+}
+
+ .metrics-btn i {
+  color: var(--md-text-muted, #888888);
+}
+
+ .metrics-btn span {
+  color: var(--md-text-muted, #888888);
+}
+
+ .metrics-btn:focus {
+  box-shadow: none;
+  background-color: var(--md-surface-alt, #f5f5f5);
+}
+
+ .metrics-btn:disabled {
+  border-color: var(--md-surface-alt, #f5f5f5);
+}
+
+ .metrics-btn:hover {
+  background-color: var(--md-surface-alt, #f5f5f5);
+}
+
+ .metrics-btn.no-bg {
+  border: none !important;
+}
+
+/* ─── Tags ─────────────────────────────────────────────────── */
+
+ .metrics-tag {
+  border-radius: var(--md-radius, 8px);
+  padding: 4px;
+  font-size: var(--font-size-sm);
+  background: var(--md-card-bg, #ffffff);
+  color: var(--md-text, #63634e);
+  text-transform: uppercase;
+
+  height: auto;
+ 
+  align-items: center;
+  justify-content: center;
+}
+ .metrics-tag .metrics-btn {
+padding: 0;
+border: none;
+ }
+  .metrics-tag .wrap {
+  
+ }
+
+
+/* ─── Progress Bar ─────────────────────────────────────────── */
+
+ .progress {
+  height: 2px;
+  overflow: inherit;
+  background-color: var(--md-border-light, #e7e7e7);
+  margin-top: 0px;
+}
+
+ .progress .progress-bar {
+  height: 100%;
+  position: relative;
+  overflow: inherit;
+  
+}
+
+ .progress .progress-bar .metrics-tag {
+  width: auto;
+  height: auto;
+  position: absolute;
+  z-index: 999;
+  right: -5px;
+  top: -10px;
+  opacity: 0.9;
+  margin: 0;
+  transition: 0.4s;
+  
+}

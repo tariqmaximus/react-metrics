@@ -3,7 +3,9 @@
 @import './metrics-data.grid.css';
 @import './metrics-data.pipeline.css';
 @import './statusTool.css';
+@import './metrics-form.controls.css';
 @import './metrics-data.filter.css';
+
 
 :root {
   --font-size-sm: 10px;
@@ -158,60 +160,12 @@
   border-radius: 0px 0 0 !important;
 }
 
-.metrics-data.collapsed .metrics-header {
-  border-bottom: 1px solid transparent;
-}
-
-.metrics-data.collapsed .metrics-header .progress {
-  margin-top: 0px;
-}
 
 .metrics-data.collapsed .metrics-body {
   max-height: 0;
   opacity: 0;
   padding: 0;
   margin-top: 45px;
-}
-
-/* ─── Header ───────────────────────────────────────────────── */
-
-.metrics-data .metrics-header {
-  background: none;
-  padding: 0;
-  border-bottom: 1px solid var(--md-border, #e7e7e7);
-  height: 60px;
-  border-radius: var(--md-radius, 8px) var(--md-radius, 8px) 0 0;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.metrics-data .metrics-header .metrics-container {
-  height: 60px;
-  padding: 0 15px;
-  display: flex !important;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.metrics-data .metrics-header .title-icon {
-  color: var(--md-text-muted, #888888);
-}
-
-.metrics-data .metrics-header .table-title {
-  margin: 0;
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: row;
-  gap: 10px;
-  font-size: var(--font-size-md);
-  align-items: center;
-  text-transform: capitalize;
-  color: var(--md-heading, var (--text-dark));
-}
-
-.metrics-data .metrics-header .table-title i {
-  color: var(--md-text-muted, #888888);
 }
 
 /* ─── Body ─────────────────────────────────────────────────── */
@@ -223,104 +177,9 @@
 }
 
 
-/* ─── Form Controls ────────────────────────────────────────── */
-
-.metrics-data .metrics-btn,
-.metrics-data .metrics-select,
-.metrics-data .metrics-input {
-  border: 1px solid var(--md-border, #e7e7e7);
-  color: var(--md-text-muted, #888888);
-  padding: 0 10px;
-  outline: none;
-}
-
-.metrics-data .metrics-btn:focus,
-.metrics-data .metrics-select:focus,
-.metrics-data .metrics-input:focus {
-  border-color: var(--md-border, #e7e7e7);
-  box-shadow: none;
-  color: var(--md-text, #63634e);
-}
-
-.metrics-data .metrics-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  color: var(--md-text-muted, #888888);
-  background-color: var(--md-surface, #ffffff);
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='20,40 70,90 120,40' stroke='%23333' stroke-width='15' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 0.75rem;
-  min-width: 150px;
-  cursor: pointer;
-}
-
-.metrics-data .metrics-select option {
-  padding: 0.5rem;
-  background-color: var(--md-surface, #ffffff);
-  color: var(--md-text, #63634e);
-  border: 1px solid var(--md-border, #e7e7e7);
-}
-
-.metrics-data .metrics-select:focus {
-  box-shadow: var(--md-focus-shadow, 0 0 0 2px rgba(0, 123, 255, 0.25));
-}
-
-/* ─── Button ───────────────────────────────────────────────── */
-
-.metrics-data .metrics-btn {
-  background-color: var(--md-surface, #ffffff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  border: 1px solid var(--md-border, #e7e7e7);
-  color: var(--md-text, #63634e);
-}
-
-.metrics-data .metrics-btn svg {
-  width: 14px;
-}
-
-.metrics-data .metrics-btn i {
-  color: var(--md-text-muted, #888888);
-}
-
-.metrics-data .metrics-btn span {
-  color: var(--md-text-muted, #888888);
-}
-
-.metrics-data .metrics-btn:focus {
-  box-shadow: none;
-  background-color: var(--md-surface-alt, #f5f5f5);
-}
-
-.metrics-data .metrics-btn:disabled {
-  border-color: var(--md-surface-alt, #f5f5f5);
-}
-
-.metrics-data .metrics-btn:hover {
-  background-color: var(--md-surface-alt, #f5f5f5);
-}
-
-.metrics-data .metrics-btn.no-bg {
-  border: none !important;
-}
 
 
 
-/* ─── Tags ─────────────────────────────────────────────────── */
-
-.metrics-data .metrics-tag {
-  border-radius: var(--md-radius, 8px);
-  padding: 4px;
-  font-size: var(--font-size-sm);
-  background: var(--md-card-bg, #ffffff);
-  color: var(--md-text, #63634e);
-  text-transform: uppercase;
-  height: auto;
-}
 
 
 
@@ -378,84 +237,6 @@
 
 .metrics-data .metrics-tabs .nav-item .nav-link.active .metrics-badge {
   display: block;
-}
-
-
-/* ─── Checkbox ─────────────────────────────────────────────── */
-
-.metrics-data .checkbox-wrapper {
-  padding: 0;
-  display: flex;
-  align-items: center;
-}
-
-.metrics-data .checkbox-wrapper .cbx {
-  user-select: none;
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 55px;
-  cursor: pointer;
-}
-
-.metrics-data .checkbox-wrapper .cbx .metrics-btn {
-  padding: 0;
-  height: auto;
-}
-
-.metrics-data .checkbox-wrapper .cbx .checkbox {
-  position: relative;
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
-  border: 2px solid var(--md-border, #e7e7e7);
-  transition: all 0.2s ease;
-}
-
-.metrics-data .checkbox-wrapper .cbx .checkbox svg {
-  position: absolute;
-  top: 4px;
-  left: 2px;
-  fill: none;
-  stroke: white;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 16px;
-  stroke-dashoffset: 16px;
-  transition: all 0.3s ease;
-  transition-delay: 0.1s;
-}
-
-.metrics-data .checkbox-wrapper .cbx .checkbox:before {
-  content: "";
-  width: 100%;
-  height: 100%;
-  transform: scale(0);
-  opacity: 1;
-  border-radius: 50%;
-  transition-delay: 0.2s;
-}
-
-.metrics-data .checkbox-wrapper .inp-cbx {
-  display: none;
-}
-
-.metrics-data .checkbox-wrapper .inp-cbx:checked + .cbx .checkbox:first-child {
-  border-color: var(--md-primary, #0173df);
-  background: var(--md-primary, #0173df);
-  animation: check-15 0.3s ease;
-}
-
-.metrics-data .checkbox-wrapper .inp-cbx:checked + .cbx .checkbox:first-child svg {
-  stroke-dashoffset: 0;
-}
-
-.metrics-data .checkbox-wrapper .inp-cbx:checked + .cbx .checkbox:first-child:before {
-  transform: scale(2.2);
-  opacity: 0;
-  transition: all 0.3s ease;
 }
 
 /* ─── Media Tile ───────────────────────────────────────────── */
@@ -575,34 +356,6 @@ border: 3px solid;
   border-color: var(--md-primary, #0173df);
 }
 
-/* ─── Progress Bar ─────────────────────────────────────────── */
-
-.metrics-data .progress {
-  height: 2px;
-  overflow: inherit;
-  background-color: var(--md-border-light, #e7e7e7);
-  margin-top: 0px;
-}
-
-.metrics-data .progress .progress-bar {
-  height: 100%;
-  position: relative;
-  overflow: inherit;
-  
-}
-
-.metrics-data .progress .progress-bar .metrics-tag {
-  width: auto;
-  height: auto;
-  position: absolute;
-  z-index: 999;
-  right: -5px;
-  top: -10px;
-  opacity: 0.9;
-  margin: 0;
-  transition: 0.4s;
-  
-}
 
 /* ─── Dropdown ─────────────────────────────────────────────── */
 

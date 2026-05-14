@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-
+import './styles/metrics-data.css';
 import FilterComponent from './FilterComponent';
 
 let uniqueCounter = 0;
@@ -440,7 +440,7 @@ export default function MetricsData(props) {
   };
 
   const renderCheckbox = ({ id, checked, onChange, children }) => (
-    <div className="checkbox-wrapper">
+    <div className="metrics-checkbox">
       <input
         className="inp-cbx"
         id={id}
@@ -1136,11 +1136,13 @@ export default function MetricsData(props) {
       {customFilter && customFilterOpen && (
         <div className="filter-slide-backdrop" onClick={() => setCustomFilterOpen(false)}>
           <div className="filter-slide-panel" onClick={event => event.stopPropagation()}>
-            <div className="filter-slide-header">
-              <h5>{customFilter.title || 'Advanced Filter'}</h5>
+            <div className="metrics-header">
+              <div className='metrics-container'>
+                <h5>{customFilter.title || 'Advanced Filter'}</h5>
               <button className="filter-close-btn" type="button" onClick={() => setCustomFilterOpen(false)}>
                 ×
               </button>
+              </div>
             </div>
             <div className="filter-slide-body">
               <FilterComponent

@@ -38,7 +38,7 @@
 - ✅ `text-start` - Start text alignment
 - ✅ `align-middle` - Vertical middle alignment
 - ✅ `sorting-group` - Column sorting container
-- ✅ `checkbox-wrapper` - Checkbox wrapper
+- ✅ `metrics-checkbox` - Checkbox wrapper
 - ✅ `inp-cbx` - Checkbox input
 - ✅ `cbx` - Checkbox label
 - ✅ `checkbox` - Checkbox visual

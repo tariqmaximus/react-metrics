@@ -345,11 +345,14 @@ export default function FilterComponent({
     if (activeCount === 0) return null;
 
     return (
-      <div className="active-filters" aria-live="polite">
-        <span className="active-filters-label">
+      <div className="metrics-accodian-section" aria-live="polite">
+        <div className='metrics-accodian-btn'>
+        <span >
           Active Filters ({activeCount}):
         </span>
-        <div className="metrics-fieldset gap-sm wrap">
+        </div>
+        <div className="accordian-body ">
+          <div className="metrics-group wrap">
           {filters.search && (
             <span className="metrics-tag primary">
               Search: "{filters.search}"
@@ -362,6 +365,7 @@ export default function FilterComponent({
               </button>
             </span>
           )}
+          
           {Object.entries(filters.checkboxes).map(([field, values]) =>
             values.map(value => (
               <span key={`${field}-${value}`} className="metrics-tag primary">
@@ -376,6 +380,7 @@ export default function FilterComponent({
               </span>
             ))
           )}
+          </div>
           {Object.entries(filters.radios).map(([field, value]) =>
             value && (
               <span key={`${field}-${value}`} className="metrics-tag">
@@ -437,7 +442,7 @@ export default function FilterComponent({
         {renderRadioSection()}
         {renderDropdownSection()}
         {renderDateRangeSection()}
-    
+    <div className='metrics-filter-footer'>
       <div className="metrics-btn-group">
         <button className="metrics-btn" onClick={resetFilters}>
           Reset Filters
@@ -445,6 +450,7 @@ export default function FilterComponent({
         <button className="metrics-btn primary" onClick={applyFilters}>
           Apply Filters
         </button>
+      </div>
       </div>
     </div>
   );

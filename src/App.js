@@ -180,10 +180,10 @@ function App() {
         showFooter
         pageSize={5}
         customFilter={{
-          title: 'Advanced Filter',
+          title: 'Custom Filter',
           button: {
-            icon: 'bi bi-filter',
-            tooltip: 'Open advanced filter',
+            icon: 'bi bi-gear',
+            tooltip: 'Open Custom Filter',
           },
           fields: [
             {

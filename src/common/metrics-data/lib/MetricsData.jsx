@@ -1138,8 +1138,8 @@ export default function MetricsData(props) {
           <div className="filter-slide-panel" onClick={event => event.stopPropagation()}>
             <div className="metrics-header">
               <div className='metrics-container'>
-                <h5>{customFilter.title || 'Advanced Filter'}</h5>
-              <button className="filter-close-btn" type="button" onClick={() => setCustomFilterOpen(false)}>
+                <h5>{customFilter.title || 'Custom Filter'}</h5>
+              <button className="metrics-btn" type="button" onClick={() => setCustomFilterOpen(false)}>
                 ×
               </button>
               </div>

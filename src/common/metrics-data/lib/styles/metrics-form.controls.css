@@ -6,6 +6,10 @@
   flex-direction: column;
   gap: var(--space-sm);
 }
+.metrics-fieldset.wrap {
+  flex-wrap: wrap;
+  flex-direction: row;
+}
 
 /* ─── Checkbox ─────────────────────────────────────────────── */
 .checkbox-group {
@@ -180,7 +184,10 @@
   box-shadow: none;
   color: var(--md-text, #63634e);
 }
-
+.metrics-btn.primary {
+  background-color: var(--md-primary, #0173df);
+  color: white;
+}
  .metrics-select {
   appearance: none;
   -webkit-appearance: none;

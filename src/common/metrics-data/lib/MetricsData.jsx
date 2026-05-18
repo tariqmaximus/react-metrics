@@ -1,6 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import '../styles/metrics-data.css';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import '../styles/metrics-data.component.css';
 import FilterComponent from './FilterComponent';
+
+const KNOWN_VIEWS = ['table', 'grid', 'pipeline'];
 
 let uniqueCounter = 0;
 
@@ -110,6 +112,9 @@ export default function MetricsData(props) {
     headerButtons = [],
     viewTypes = [],
     showViewTypes = false,
+    showViewSwitcher = true,
+    defaultView = 'table',
+    view,
     collapsible = false,
     variant = '',
     metricsHeader = true,
@@ -118,21 +123,107 @@ export default function MetricsData(props) {
     title = 'Metrics Data',
     sub,
     progressBy,
+    showKpis = [],
     mediaImage = '',
     mediaDetailsRenderer,
     mediaDetailsKeys = ['name', 'source'],
     idPrefix,
     theme = {},
     statusMap = {},
-    valueLenthColumns = [],
+    valueLengthColumns = [],
     searchKey = 'name',
     headerComponent = null,
     footerComponent = null,
-    onRowAction = () => {},
+    onRowAction = () => { },
     customFilter = null,
   } = props;
 
   const sorting = sortingProp || Sorting;
+
+  const normalizedKpis = useMemo(() => {
+    if (!Array.isArray(showKpis) || showKpis.length === 0) return [];
+
+    return showKpis.map((item, index) => {
+      const cardKey = String(item.card || item.label || '').toLowerCase().trim();
+      const label = item.label || toLabel(cardKey);
+      const value = item.value !== undefined
+        ? item.value
+        : data.filter(row =>
+            Object.values(row || {}).some(value =>
+              String(value || '').toLowerCase().trim() === cardKey
+            )
+          ).length;
+      const change = item.change;
+      const changeClass = typeof change === 'string' && change.trim().startsWith('-') ? 'negative' : 'positive';
+      const subtitle = item.subtitle || 'vs. last month';
+
+      return {
+        ...item,
+        cardKey,
+        label,
+        value,
+        change,
+        changeClass,
+        subtitle,
+        index,
+      };
+    });
+  }, [showKpis, data]);
+
+  const resolveViewType = useCallback(value => {
+    if (value === undefined || value === null) return null;
+    const normalized = String(value).toLowerCase();
+    return KNOWN_VIEWS.includes(normalized) ? normalized : null;
+  }, []);
+
+  const viewSource = useMemo(() => {
+    if (Array.isArray(showViewTypes) && showViewTypes.length > 0) return showViewTypes;
+    if (Array.isArray(viewTypes) && viewTypes.length > 0) return viewTypes;
+    if (showViewTypes === true) return KNOWN_VIEWS;
+    return [defaultView];
+  }, [showViewTypes, viewTypes, defaultView]);
+
+  const normalizedViewTypes = useMemo(() => {
+    const candidates = Array.isArray(viewSource) ? viewSource : [];
+    const values = [];
+
+    candidates.forEach(candidate => {
+      if (typeof candidate === 'string') {
+        const viewType = resolveViewType(candidate);
+        if (viewType) values.push(viewType);
+        return;
+      }
+
+      const viewType = resolveViewType(candidate.view || candidate.action || candidate.label);
+      if (viewType) values.push(viewType);
+    });
+
+    if (values.length === 0) {
+      values.push(resolveViewType(defaultView) || 'table');
+    }
+
+    return Array.from(new Set(values));
+  }, [viewSource, defaultView, resolveViewType]);
+
+  const resolvedView = resolveViewType(view);
+  const resolvedDefaultView = resolveViewType(defaultView) || 'table';
+
+  const [currentViewType, setCurrentViewType] = useState(() => {
+    if (resolvedView && normalizedViewTypes.includes(resolvedView)) return resolvedView;
+    if (!resolvedView && normalizedViewTypes.includes(resolvedDefaultView)) return resolvedDefaultView;
+    return normalizedViewTypes[0];
+  });
+
+  useEffect(() => {
+    setCurrentViewType(prev => {
+      if (resolvedView) {
+        return normalizedViewTypes.includes(resolvedView) ? resolvedView : normalizedViewTypes[0];
+      }
+      return normalizedViewTypes.includes(prev) ? prev : normalizedViewTypes[0];
+    });
+  }, [resolvedView, normalizedViewTypes]);
+
+  const canShowViewButtons = showViewSwitcher !== false && showViewTypes !== false && normalizedViewTypes.length > 1;
 
   const [internalIdPrefix] = useState(() => idPrefix || `metrics-data-${uniqueCounter++}`);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -140,7 +231,6 @@ export default function MetricsData(props) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [datePicker, setDatePicker] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [currentViewType, setCurrentViewType] = useState('table');
   const [sortKey, setSortKey] = useState(null);
   const [sortAsc, setSortAsc] = useState(true);
   const [dropdownShownIndex, setDropdownShownIndex] = useState(null);
@@ -204,24 +294,24 @@ export default function MetricsData(props) {
         const customFilterMatch = !customFilter?.fields || !Array.isArray(customFilter.fields)
           ? true
           : customFilter.fields.every(field => {
-              const filterValue = customFilterValues?.[field.key];
-              if (filterValue === undefined || filterValue === null || filterValue === '') return true;
+            const filterValue = customFilterValues?.[field.key];
+            if (filterValue === undefined || filterValue === null || filterValue === '') return true;
 
-              const rowValue = item?.[field.key];
-              if (field.type === 'date') {
-                return rowValue && new Date(rowValue).toDateString() === new Date(filterValue).toDateString();
-              }
+            const rowValue = item?.[field.key];
+            if (field.type === 'date') {
+              return rowValue && new Date(rowValue).toDateString() === new Date(filterValue).toDateString();
+            }
 
-              if (field.type === 'number') {
-                return Number(rowValue) === Number(filterValue);
-              }
+            if (field.type === 'number') {
+              return Number(rowValue) === Number(filterValue);
+            }
 
-              if (field.type === 'select') {
-                return String(rowValue) === String(filterValue);
-              }
+            if (field.type === 'select') {
+              return String(rowValue) === String(filterValue);
+            }
 
-              return String(rowValue || '').toLowerCase().includes(String(filterValue || '').toLowerCase());
-            });
+            return String(rowValue || '').toLowerCase().includes(String(filterValue || '').toLowerCase());
+          });
 
         return keywordMatch && optionMatch && dateMatch && customFilterMatch;
       })
@@ -253,15 +343,7 @@ export default function MetricsData(props) {
       list: 'bi bi-list',
     };
 
-    let types = [];
-
-    if (Array.isArray(showViewTypes) && showViewTypes.length > 0) {
-      types = showViewTypes;
-    } else if (Array.isArray(viewTypes) && viewTypes.length > 0) {
-      types = viewTypes;
-    } else if (showViewTypes === true) {
-      types = ['table', 'grid', 'pipeline'];
-    }
+    const types = Array.isArray(viewSource) ? viewSource : [];
 
     return types.map(viewType => {
       if (typeof viewType === 'string') {
@@ -278,8 +360,7 @@ export default function MetricsData(props) {
       }
 
       const action =
-        viewType.view?.toLowerCase() ||
-        viewType.action?.toLowerCase() ||
+        resolveViewType(viewType.view || viewType.action || viewType.label) ||
         String(viewType.label || '').toLowerCase();
 
       return {
@@ -291,7 +372,7 @@ export default function MetricsData(props) {
         icon: viewType.icon || iconMap[action] || `bi bi-${action}`,
       };
     });
-  }, [viewTypes, showViewTypes, internalIdPrefix]);
+  }, [viewSource, internalIdPrefix, resolveViewType]);
 
   const progressValue = useMemo(() => {
     if (!progressBy || !filterBy || !data.length) return 0;
@@ -345,7 +426,7 @@ export default function MetricsData(props) {
     return value !== undefined && value !== null && value !== '' ? String(value) : '-';
   };
 
-  const shouldApplyValueLenth = key => Array.isArray(valueLenthColumns) && valueLenthColumns.includes(key);
+  const shouldApplyValueLength = key => Array.isArray(valueLengthColumns) && valueLengthColumns.includes(key);
 
   const getRowKey = row => row?.id || row?.[searchKey] || row?.name || JSON.stringify(row);
 
@@ -603,8 +684,8 @@ export default function MetricsData(props) {
       default:
         return (
           <span
-            className={`value ${shouldApplyValueLenth(column.key) ? 'value-lenth' : ''}`}
-            title={shouldApplyValueLenth(column.key) ? getValue(row, column.key) : undefined}
+            className={`value ${shouldApplyValueLength(column.key) ? 'value-length' : ''}`}
+            title={shouldApplyValueLength(column.key) ? getValue(row, column.key) : undefined}
           >
             {getValue(row, column.key)}
           </span>
@@ -950,220 +1031,268 @@ export default function MetricsData(props) {
   };
 
   return (
-    <div
-      className={`metrics-data gnaric-font-size ${variant} ${isCollapsed ? 'collapsed' : ''}`.trim()}
-      style={{
-        '--md-bg': theme.background || '#ffffff',
-        '--md-surface': theme.surface || '#ffffff',
-        '--md-surface-alt': theme.surfaceAlt || '#f5f5f5',
+    <>
+      {normalizedKpis.length > 0 && (
+        <div className='metrics-kpis'>
+          <div className='metrics-kpis-wrapper'>
+            {normalizedKpis.map(kpi => {
+              const statusTheme = getStatusTheme(kpi.cardKey);
+              const cardClass = statusTheme.className === 'metrics-status'
+                ? 'metrics-kpi-card metrics-status'
+                : `metrics-kpi-card ${statusTheme.className}`;
 
-        '--md-text': theme.text || '#63634e',
-        '--md-text-muted': theme.textMuted || '#888888',
-        '--md-heading': theme.heading || '#212529',
+              return (
+                <div key={`kpi-${kpi.cardKey}-${kpi.index}`} className={cardClass} style={statusTheme.style}>
+                  <div className="metrics-kpi-top">
+                    <div className="metrics-kpi-icon-wrapper">
+                      {kpi.icon && <i className={`metrics-kpi-icon ${kpi.icon}`} />}
+                    </div>
+                    {kpi.change !== undefined && (
+                      <span className={`metrics-kpi-change ${kpi.changeClass}`}>{kpi.change}</span>
+                    )}
+                  </div>
 
-        '--md-border': theme.border || '#e7e7e7',
-        '--md-border-light': theme.borderLight || '#f0f0f0',
+                  <div className="metrics-kpi-content">
+                    <p className="metrics-kpi-value">{kpi.value}</p>
+                    <span className="metrics-kpi-label">{kpi.label}</span>
+                    <span className="metrics-kpi-subtitle">{kpi.subtitle}</span>
+                  </div>
 
-        '--md-primary': theme.primary || '#0173df',
-        '--md-success': theme.success || '#28a745',
-        '--md-warning': theme.warning || '#f1a10a',
-        '--md-info': theme.info || '#17a2b8',
-        '--md-danger': theme.danger || '#dc3545',
+                  <div className="metrics-kpi-chart">
+                    <svg viewBox="0 0 100 50" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id={`kpiGradient-${kpi.index}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="currentColor" stopOpacity="0.12" />
+                          <stop offset="100%" stopColor="currentColor" stopOpacity="0.24" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M0 34 C20 24, 40 18, 60 22 C75 26, 88 16, 100 12 L100 50 L0 50 Z" fill={`url(#kpiGradient-${kpi.index})`} />
+                      <path d="M0 34 C20 24, 40 18, 60 22 C75 26, 88 16, 100 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+      <div
+        className={`metrics-data generic-font-size ${variant} ${isCollapsed ? 'collapsed' : ''}`.trim()}
+        style={{
+          '--md-bg': theme.background || '#ffffff',
+          '--md-surface': theme.surface || '#ffffff',
+          '--md-surface-alt': theme.surfaceAlt || '#f5f5f5',
 
-        '--md-card-bg': theme.cardBg || '#ffffff',
-        '--md-header-bg': theme.headerBg || '#ffffff',
-        '--md-table-header-bg': theme.tableHeaderBg || '#ffffff',
-        '--md-grid-bg': theme.gridBg || '#f9f9f9',
-        '--md-pipeline-bg': theme.pipelineBg || '#f5f7fa',
+          '--md-text': theme.text || '#63634e',
+          '--md-text-muted': theme.textMuted || '#888888',
+          '--md-heading': theme.heading || '#212529',
 
-        '--md-radius': theme.radius || '8px',
-        '--md-card-radius': theme.cardRadius || '10px',
+          '--md-border': theme.border || '#e7e7e7',
+          '--md-border-light': theme.borderLight || '#f0f0f0',
 
-        '--md-shadow': theme.shadow || '0 0px 16px rgba(0, 0, 0, 0.1)',
-        '--md-card-shadow': theme.cardShadow || '0 2px 8px rgba(0, 0, 0, 0.04)',
-        '--md-card-hover-shadow': theme.cardHoverShadow || '0 12px 32px rgba(0, 0, 0, 0.12)',
+          '--md-primary': theme.primary || '#0173df',
+          '--md-success': theme.success || '#28a745',
+          '--md-warning': theme.warning || '#f1a10a',
+          '--md-info': theme.info || '#17a2b8',
+          '--md-danger': theme.danger || '#dc3545',
 
-        ...theme.variables,
-      }}
-    >
-      {metricsHeader && (
-        <div className="metrics-header">
-          <div className="metrics-container">
-            <div className="metrics-group gap">
-              <h6 className="table-title">
-                {icon && <i className={`title-icon ${icon}`} />}
-                {title}
-                {sub && <span className="text-muted">{sub}</span>}
-              </h6>
+          '--md-card-bg': theme.cardBg || '#ffffff',
+          '--md-header-bg': theme.headerBg || '#ffffff',
+          '--md-table-header-bg': theme.tableHeaderBg || '#ffffff',
+          '--md-grid-bg': theme.gridBg || '#f9f9f9',
+          '--md-pipeline-bg': theme.pipelineBg || '#f5f7fa',
 
-              {filterStyle.includes('tabs') && currentViewType !== 'pipeline' && (
-                <ul className="nav metrics-tabs" role="tablist">
-                  <li className="nav-item" role="presentation">
-                    <button
-                      className={`nav-link ${selectedOption === '' ? 'active' : ''}`}
-                      type="button"
-                      role="tab"
-                      onClick={() => setSelectedOption('')}
-                    >
-                      All
-                    </button>
-                  </li>
+          '--md-radius': theme.radius || '8px',
+          '--md-card-radius': theme.cardRadius || '10px',
 
-                  {searchOptions.map(option => (
-                    <li className="nav-item" role="presentation" key={option}>
+          '--md-shadow': theme.shadow || '0 0px 16px rgba(0, 0, 0, 0.1)',
+          '--md-card-shadow': theme.cardShadow || '0 2px 8px rgba(0, 0, 0, 0.04)',
+          '--md-card-hover-shadow': theme.cardHoverShadow || '0 12px 32px rgba(0, 0, 0, 0.12)',
+
+          ...theme.variables,
+        }}
+      >
+        {metricsHeader && (
+          <div className="metrics-header">
+            <div className="metrics-container">
+              <div className="metrics-group gap">
+                <h6 className="table-title">
+                  {icon && <i className={`title-icon ${icon}`} />}
+                  {title}
+                  {sub && <span className="text-muted">{sub}</span>}
+                </h6>
+
+                {filterStyle.includes('tabs') && currentViewType !== 'pipeline' && (
+                  <ul className="nav metrics-tabs" role="tablist">
+                    <li className="nav-item" role="presentation">
                       <button
-                        className={`nav-link  ${selectedOption === option ? 'active' : ''}`}
+                        className={`nav-link ${selectedOption === '' ? 'active' : ''}`}
                         type="button"
                         role="tab"
-                        onClick={() => setSelectedOption(option)}
+                        onClick={() => setSelectedOption('')}
                       >
-                        
-                        {option}
-                        {(() => {
-                          const optionTheme = getStatusTheme(option);
-                          return (
-                            <span
-                              className={optionTheme.className === 'metrics-status' ? 'metrics-badge metrics-status' : `metrics-badge ${optionTheme.className}`}
-                              style={optionTheme.style}
-                            >
-                              {getTabCount(option)}
-                            </span>
-                          );
-                        })()}
+                        All
                       </button>
                     </li>
-                  ))}
-                </ul>
-              )}
-            </div>
 
-            <div className="metrics-group gap">
-              {headerComponent}
+                    {searchOptions.map(option => (
+                      <li className="nav-item" role="presentation" key={option}>
+                        <button
+                          className={`nav-link  ${selectedOption === option ? 'active' : ''}`}
+                          type="button"
+                          role="tab"
+                          onClick={() => setSelectedOption(option)}
+                        >
+
+                          {option}
+                          {(() => {
+                            const optionTheme = getStatusTheme(option);
+                            return (
+                              <span
+                                className={optionTheme.className === 'metrics-status' ? 'metrics-badge metrics-status' : `metrics-badge ${optionTheme.className}`}
+                                style={optionTheme.style}
+                              >
+                                {getTabCount(option)}
+                              </span>
+                            );
+                          })()}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
 
               <div className="metrics-group gap">
-                <div className="metrics-btn-group">
-                  {filterStyle.includes('dropdown') && filterBy && (
-                    <select className="metrics-select" value={selectedOption} onChange={event => setSelectedOption(event.target.value)}>
-                      <option value="">All</option>
+                {headerComponent}
 
-                      {searchOptions.map(option => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-
-                  {filterStyle.includes('keyword') && (
-                    <input
-                      type="text"
-                      className="metrics-input"
-                      placeholder="Search..."
-                      value={searchKeyword}
-                      onChange={event => setSearchKeyword(event.target.value)}
-                    />
-                  )}
-
-                  {filterStyle.includes('date') && (
-                    <>
-                      <button className="metrics-btn" type="button" onClick={() => setDatePicker(prev => !prev)} style={{ minWidth: 120 }}>
-                        <CalendarIcon />
-                        <span>{selectedDate.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                      </button>
-
-                      {datePicker && renderDatePicker()}
-                    </>
-                  )}
-                </div>
-
-                <div className="metrics-btn-group">
-                  {viewButtons.map((button, index) => renderHeaderButton(button, index, 'view'))}
-                </div>
-
-                {customFilter && (
+                <div className="metrics-group gap">
                   <div className="metrics-btn-group">
-                    <button
-                      className={`metrics-btn ${customFilter.button?.className || ''}`.trim()}
-                      type="button"
-                      title={customFilter.button?.tooltip || 'Open custom filter'}
-                      onClick={() => setCustomFilterOpen(true)}
-                    >
-                      {customFilter.button?.icon ? <i className={customFilter.button.icon} /> : <FilterIcon />}
-                      {customFilter.button?.label && <span>{customFilter.button.label}</span>}
-                    </button>
+                    {filterStyle.includes('dropdown') && filterBy && (
+                      <select className="metrics-select" value={selectedOption} onChange={event => setSelectedOption(event.target.value)}>
+                        <option value="">All</option>
+
+                        {searchOptions.map(option => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+
+                    {filterStyle.includes('keyword') && (
+                      <input
+                        type="text"
+                        className="metrics-input"
+                        placeholder="Search..."
+                        value={searchKeyword}
+                        onChange={event => setSearchKeyword(event.target.value)}
+                      />
+                    )}
+
+                    {filterStyle.includes('date') && (
+                      <>
+                        <button className="metrics-btn" type="button" onClick={() => setDatePicker(prev => !prev)} style={{ minWidth: 120 }}>
+                          <CalendarIcon />
+                          <span>{selectedDate.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                        </button>
+
+                        {datePicker && renderDatePicker()}
+                      </>
+                    )}
                   </div>
-                )}
 
-                <div className="metrics-btn-group">
-                  {headerButtons.map((button, index) => renderHeaderButton(button, index, 'header'))}
-                </div>
-
-                <div className="metrics-btn-group">
-                  {collapsible && (
-                    <button className="metrics-btn" type="button" onClick={() => setIsCollapsed(prev => !prev)}>
-                      <CollapseIcon collapsed={isCollapsed} />
-                    </button>
+                  {canShowViewButtons && (
+                    <div className="metrics-btn-group">
+                      {viewButtons.map((button, index) => renderHeaderButton(button, index, 'view'))}
+                    </div>
                   )}
+
+                  {customFilter && (
+                    <div className="metrics-btn-group">
+                      <button
+                        className={`metrics-btn ${customFilter.button?.className || ''}`.trim()}
+                        type="button"
+                        title={customFilter.button?.tooltip || 'Open custom filter'}
+                        onClick={() => setCustomFilterOpen(true)}
+                      >
+                        {customFilter.button?.icon ? <i className={customFilter.button.icon} /> : <FilterIcon />}
+                        {customFilter.button?.label && <span>{customFilter.button.label}</span>}
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="metrics-btn-group">
+                    {headerButtons.map((button, index) => renderHeaderButton(button, index, 'header'))}
+                  </div>
+
+                  <div className="metrics-btn-group">
+                    {collapsible && (
+                      <button className="metrics-btn" type="button" onClick={() => setIsCollapsed(prev => !prev)}>
+                        <CollapseIcon collapsed={isCollapsed} />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {progressBy && (() => {
-            const progressStatusTheme = getStatusTheme(selectedOption || progressBy);
-            return (
-              <div className="progress">
-                <div
-                  className={`progress-bar ${progressStatusTheme.className}`}
-                  role="progressbar"
-                  style={{ width: `${progressValue}%`, ...progressStatusTheme.style }}
-                  aria-valuenow={progressValue}
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                >
-                  <p className="metrics-tag">{progressValue}%</p>
+            {progressBy && (() => {
+              const progressStatusTheme = getStatusTheme(selectedOption || progressBy);
+              return (
+                <div className="progress">
+                  <div
+                    className={`progress-bar ${progressStatusTheme.className}`}
+                    role="progressbar"
+                    style={{ width: `${progressValue}%`, ...progressStatusTheme.style }}
+                    aria-valuenow={progressValue}
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  >
+                    <p className="metrics-tag">{progressValue}%</p>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
+        <div className={`metrics-body view-${currentViewType}`}>{renderCurrentTemplate()}</div>
+
+        {showFooter && footerComponent && <div className="metrics-footer">{footerComponent}</div>}
+
+        {customFilter && customFilterOpen && (
+          <div className="filter-slide-backdrop" onClick={() => setCustomFilterOpen(false)}>
+            <div className="filter-slide-panel" onClick={event => event.stopPropagation()}>
+              <div className="metrics-header">
+                <div className='metrics-container'>
+                  <h5>{customFilter.title || 'Custom Filter'}</h5>
+                  <button className="metrics-btn" type="button" onClick={() => setCustomFilterOpen(false)}>
+                    ×
+                  </button>
                 </div>
               </div>
-            );
-          })()}
-        </div>
-      )}
-
-      <div className={`metrics-body view-${currentViewType}`}>{renderCurrentTemplate()}</div>
-
-      {showFooter && footerComponent && <div className="metrics-footer">{footerComponent}</div>}
-
-      {customFilter && customFilterOpen && (
-        <div className="filter-slide-backdrop" onClick={() => setCustomFilterOpen(false)}>
-          <div className="filter-slide-panel" onClick={event => event.stopPropagation()}>
-            <div className="metrics-header">
-              <div className='metrics-container'>
-                <h5>{customFilter.title || 'Custom Filter'}</h5>
-              <button className="metrics-btn" type="button" onClick={() => setCustomFilterOpen(false)}>
-                ×
-              </button>
+              <div className="filter-slide-body">
+                <FilterComponent
+                  data={data}
+                  onApply={(filters) => {
+                    setCustomFilterValues(filters);
+                    customFilter?.onApply?.(filters);
+                    setCustomFilterOpen(false);
+                  }}
+                  onReset={(filters) => {
+                    setCustomFilterValues(filters);
+                    customFilter?.onReset?.(filters);
+                  }}
+                  initialFilters={customFilterValues}
+                  theme={theme}
+                  idPrefix={internalIdPrefix}
+                />
               </div>
             </div>
-            <div className="filter-slide-body">
-              <FilterComponent
-                data={data}
-                onApply={(filters) => {
-                  setCustomFilterValues(filters);
-                  customFilter?.onApply?.(filters);
-                  setCustomFilterOpen(false);
-                }}
-                onReset={(filters) => {
-                  setCustomFilterValues(filters);
-                  customFilter?.onReset?.(filters);
-                }}
-                initialFilters={customFilterValues}
-                theme={theme}
-                idPrefix={internalIdPrefix}
-              />
-            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 }

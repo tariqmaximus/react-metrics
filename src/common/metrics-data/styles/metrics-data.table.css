@@ -76,7 +76,7 @@
   border-top: 1px solid var(--md-border, #e7e7e7);
 }
 
-.metrics-data table tr td .value-lenth {
+.metrics-data table tr td .value-length {
   display: inline-block;
   max-width: 100px;
   overflow: hidden;
@@ -86,7 +86,7 @@
   cursor: pointer;
 }
 
-.metrics-data table tr td .value-lenth:hover {
+.metrics-data table tr td .value-length:hover {
   text-decoration: underline dotted;
 }
 

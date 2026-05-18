@@ -176,6 +176,12 @@ function App() {
             tooltip: 'Pipeline view',
           },
         ]}
+        showKpis={[
+          { icon: 'bi bi-check-circle', card: 'completed' },
+          { icon: 'bi bi-hourglass-split', card: 'pending' },
+          { icon: 'bi bi-arrow-repeat', card: 'inprogress' },
+          { icon: 'bi bi-graph-up', card: 'marketing' },
+        ]}
         paginated
         showFooter
         pageSize={5}

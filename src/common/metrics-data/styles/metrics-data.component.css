@@ -1,4 +1,5 @@
 /* ─── IMPORTS ─────────────────────────────────────────────── */
+@import './metrics-data.variables.css';
 @import './metrics-data.table.css';
 @import './metrics-data.grid.css';
 @import './metrics-data.pipeline.css';
@@ -7,38 +8,8 @@
 @import './metrics-form.controls.css';
 @import './metrics-data.filter.css';
 
-
-:root {
-  --font-size-sm: 10px;
-  --font-size-base: 14px;
-  --font-size-md: 16px;
-  --font-size-lg: 18px;
-  --md-status-text: initial;
-  --md-status-bg: initial;
-  --md-status-border: initial;
-    /* TEXT */
-  --text-dark: #212529;
-  --text-base: #63634e;
-  --text-light: #888888;
-  --text-white: #ffffff;
-
-  /* BORDER */
-  --border-color: #e7e7e7;
-  --border-light: #e3e6ea;
-
-  /* SPACING */
-  --space-xs: 5px;
-  --space-sm: 8px;
-  --space-md: 15px;
-  --space-lg: 20px;
-
-  /* OPTIONAL (recommended for consistency) */
-  --radius-sm: 5px;
-  --radius-md: 8px;
-}
-
 .generic-font-size {
-  font-size: var(--font-size-base);
+  font-size: var(--md-font-size-base, 14px);
 }
 
 /* ─── Layout Utilities ─────────────────────────────────────── */
@@ -47,17 +18,17 @@
   align-items: stretch;
 }
 .metrics-group.gap-sm {
-  gap: var(--space-sm, 8px);
+  gap: var(--md-space-sm, 8px);
 }
 .metrics-group.gap-md {
-  gap: var(--space-md, 15px);
+  gap: var(--md-space-md, 15px);
 }
 .metrics-group.gap-lg {
-  gap: var(--space-lg, 20px);
+  gap: var(--md-space-lg, 20px);
 }
 .metrics-group.wrap {
   flex-wrap: wrap;
-  gap: var(--space-ssm, 2px);
+  gap: var(--md-space-xxs, 2px);
  }
 
 .metrics-group.gap {

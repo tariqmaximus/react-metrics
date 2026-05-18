@@ -139,10 +139,10 @@ export default function FilterComponent({
   };
 
   const renderSearchSection = () => (
-    <div className="metrics-accodian-section">
+    <div className="metrics-accordion-section">
       
       <button
-        className="metrics-accodian-btn"
+        className="metrics-accordion-btn"
         onClick={() => toggleSection('search')}
         aria-expanded={expandedSections.search}
         aria-controls={`${idPrefix}-search-panel`}
@@ -151,7 +151,7 @@ export default function FilterComponent({
         {expandedSections.search ? <ChevronUpIcon /> : <ChevronDownIcon />}
       </button>
       {expandedSections.search && (
-        <div id={`${idPrefix}-search-panel`} className="accordian-body">
+        <div id={`${idPrefix}-search-panel`} className="accordion-body">
          
             <label htmlFor={`${idPrefix}-search`}>Keyword Search</label>
             
@@ -175,9 +175,9 @@ export default function FilterComponent({
   );
 
   const renderCheckboxSection = () => (
-    <div className="metrics-accodian-section">
+    <div className="metrics-accordion-section">
       <button
-        className="metrics-accodian-btn"
+        className="metrics-accordion-btn"
         onClick={() => toggleSection('checkboxes')}
         aria-expanded={expandedSections.checkboxes}
         aria-controls={`${idPrefix}-checkboxes-panel`}
@@ -186,7 +186,7 @@ export default function FilterComponent({
         {expandedSections.checkboxes ? <ChevronUpIcon /> : <ChevronDownIcon />}
       </button>
       {expandedSections.checkboxes && (
-        <div id={`${idPrefix}-checkboxes-panel`} className="accordian-body">
+        <div id={`${idPrefix}-checkboxes-panel`} className="accordion-body">
           {Object.entries(filterOptions.checkboxes).map(([field, options]) => (
             <div key={field} >
               <label className="metrics-fieldset gap-sm-label">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
@@ -220,9 +220,9 @@ export default function FilterComponent({
   );
 
   const renderRadioSection = () => (
-    <div className="metrics-accodian-section">
+    <div className="metrics-accordion-section">
       <button
-        className="metrics-accodian-btn"
+        className="metrics-accordion-btn"
         onClick={() => toggleSection('radios')}
         aria-expanded={expandedSections.radios}
         aria-controls={`${idPrefix}-radios-panel`}
@@ -231,7 +231,7 @@ export default function FilterComponent({
         {expandedSections.radios ? <ChevronUpIcon /> : <ChevronDownIcon />}
       </button>
       {expandedSections.radios && (
-        <div id={`${idPrefix}-radios-panel`} className="accordian-body">
+        <div id={`${idPrefix}-radios-panel`} className="accordion-body">
           {Object.entries(filterOptions.radios).map(([field, options]) => (
             <div key={field} >
               <label className="metrics-fieldset gap-sm-label">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
@@ -267,9 +267,9 @@ export default function FilterComponent({
   );
 
   const renderDropdownSection = () => (
-    <div className="metrics-accodian-section">
+    <div className="metrics-accordion-section">
       <button
-        className="metrics-accodian-btn"
+        className="metrics-accordion-btn"
         onClick={() => toggleSection('dropdowns')}
         aria-expanded={expandedSections.dropdowns}
         aria-controls={`${idPrefix}-dropdowns-panel`}
@@ -278,7 +278,7 @@ export default function FilterComponent({
         {expandedSections.dropdowns ? <ChevronUpIcon /> : <ChevronDownIcon />}
       </button>
       {expandedSections.dropdowns && (
-        <div id={`${idPrefix}-dropdowns-panel`} className="accordian-body">
+        <div id={`${idPrefix}-dropdowns-panel`} className="accordion-body">
           {Object.entries(filterOptions.dropdowns).map(([field, options]) => (
             <div key={field} className="metrics-fieldset gap-sm">
               <label htmlFor={`${idPrefix}-dropdown-${field}`}>
@@ -303,9 +303,9 @@ export default function FilterComponent({
   );
 
   const renderDateRangeSection = () => (
-    <div className="metrics-accodian-section">
+    <div className="metrics-accordion-section">
       <button
-        className="metrics-accodian-btn"
+        className="metrics-accordion-btn"
         onClick={() => toggleSection('dateRange')}
         aria-expanded={expandedSections.dateRange}
         aria-controls={`${idPrefix}-daterange-panel`}
@@ -314,7 +314,7 @@ export default function FilterComponent({
         {expandedSections.dateRange ? <ChevronUpIcon /> : <ChevronDownIcon />}
       </button>
       {expandedSections.dateRange && (
-        <div id={`${idPrefix}-daterange-panel`} className="accordian-body">
+        <div id={`${idPrefix}-daterange-panel`} className="accordion-body">
           <div className="metrics-fieldset gap-sm">
             <label htmlFor={`${idPrefix}-date-from`}>From Date</label>
             <input
@@ -345,13 +345,13 @@ export default function FilterComponent({
     if (activeCount === 0) return null;
 
     return (
-      <div className="metrics-accodian-section" aria-live="polite">
-        <div className='metrics-accodian-btn'>
+      <div className="metrics-accordion-section" aria-live="polite">
+        <div className='metrics-accordion-btn'>
         <span >
           Active Filters ({activeCount}):
         </span>
         </div>
-        <div className="accordian-body ">
+        <div className="accordion-body">
           <div className="metrics-group wrap">
           {filters.search && (
             <span className="metrics-tag primary">

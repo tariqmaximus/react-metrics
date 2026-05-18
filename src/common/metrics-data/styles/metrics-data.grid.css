@@ -22,31 +22,31 @@
 @media (max-width: 1024px) {
   .view-grid .grid-container {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: var(--space-md);
+    gap: var(--md-space-md);
   }
 }
 
 @media (max-width: 768px) {
   .view-grid {
-    padding: var(--space-sm);
+    padding: var(--md-space-sm);
   }
 
   .view-grid .grid-container {
     grid-template-columns: 1fr;
-    gap: var(--space-md);
+    gap: var(--md-space-md);
   }
 
   .view-grid .metrics-card-header {
-    padding: var(--space-sm);
-    gap: var(--space-sm);
+    padding: var(--md-space-sm);
+    gap: var(--md-space-sm);
   }
 
   .view-grid .grid-card-body {
-    padding: var(--space-sm);
+    padding: var(--md-space-sm);
   }
 
   .view-grid .grid-card-footer {
-    padding: var(--space-sm);
+    padding: var(--md-space-sm);
     flex-direction: column;
   }
 

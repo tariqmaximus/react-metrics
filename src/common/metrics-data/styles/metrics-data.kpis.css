@@ -14,7 +14,7 @@ align-items: center;
   overflow: hidden;
   width: 100%;
 
-  padding: var(--space-base, 10px);
+  padding: var(--md-space-base, 10px);
   border: 1px solid rgba(15, 23, 42, 0.08);
 
   background-color: var(--md-card-bg, #ffffff);
@@ -35,7 +35,7 @@ align-items: center;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: var(--space-sm, 8px);
+  gap: var(--md-space-sm, 8px);
 }
 
 .metrics-kpi-icon-wrapper {
@@ -44,7 +44,7 @@ align-items: center;
   justify-content: center;
   width: 30px;
   height: 30px;
-  border-radius: var(--round-base, 10px);
+  border-radius: var(--md-radius, 10px);
   background-color: var(--md-status-bg, rgba(15, 23, 42, 0.06));
   color: var(--md-status-text, var(--md-text, #111827));
 
@@ -60,8 +60,8 @@ align-items: center;
 }
 .metrics-kpi-change {
   position: absolute;
-  top: var(--space-md, 15px);
-  right: var(--space-md, 15px);
+  top: var(--md-space-md, 15px);
+  right: var(--md-space-md, 15px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -79,7 +79,7 @@ align-items: center;
 }
 
 .metrics-kpi-content {
-  padding-top: var(--space-sm, 8px);
+  padding-top: var(--md-space-sm, 8px);
   max-width: 220px;
 }
 

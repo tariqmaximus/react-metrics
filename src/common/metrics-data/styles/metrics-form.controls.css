@@ -1,53 +1,61 @@
-.metrics-fieldset {
+/* ─── Form Controls ────────────────────────────────────────── */
 
+.metrics-fieldset {
   padding: 0;
   border-radius: var(--md-radius, 8px);
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--md-space-sm, 8px);
 }
+
 .metrics-fieldset.wrap {
   flex-wrap: wrap;
   flex-direction: row;
 }
 
 /* ─── Checkbox ─────────────────────────────────────────────── */
-.checkbox-group {
+.checkbox-group,
+.radio-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--md-space-sm, 8px);
 }
- .metrics-checkbox {
+
+.metrics-checkbox,
+.metrics-radio {
   padding: 0;
   display: flex;
   align-items: center;
 }
 
- .metrics-checkbox .cbx {
+.metrics-checkbox .cbx,
+.metrics-radio .radio-label {
   user-select: none;
   display: flex;
-  gap: 15px;
+  gap: var(--md-space-sm, 8px);
   align-items: center;
   justify-content: flex-start;
   min-width: 55px;
   cursor: pointer;
 }
 
- .metrics-checkbox .cbx .metrics-btn {
+.metrics-checkbox .cbx .metrics-btn,
+.metrics-radio .radio-label .metrics-btn {
   padding: 0;
   height: auto;
 }
 
- .metrics-checkbox .cbx .checkbox {
+.metrics-checkbox .cbx .checkbox,
+.metrics-radio .radio-label .radio {
   position: relative;
   width: 20px;
   height: 20px;
-  border-radius: 5px;
+  border-radius: 50%;
   border: 2px solid var(--md-border, #e7e7e7);
   transition: all 0.2s ease;
 }
 
- .metrics-checkbox .cbx .checkbox svg {
+.metrics-checkbox .cbx .checkbox svg {
   position: absolute;
   top: 4px;
   left: 2px;
@@ -62,7 +70,8 @@
   transition-delay: 0.1s;
 }
 
- .metrics-checkbox .cbx .checkbox:before {
+.metrics-checkbox .cbx .checkbox:before,
+.metrics-radio .radio-label .radio:before {
   content: "";
   width: 100%;
   height: 100%;
@@ -72,58 +81,29 @@
   transition-delay: 0.2s;
 }
 
- .metrics-checkbox .inp-cbx {
+.metrics-checkbox .inp-cbx,
+.metrics-radio .inp-radio {
   display: none;
 }
 
- .metrics-checkbox .inp-cbx:checked + .cbx .checkbox:first-child {
+.metrics-checkbox .inp-cbx:checked + .cbx .checkbox,
+.metrics-radio .inp-radio:checked + .radio-label .radio {
   border-color: var(--md-primary, #0173df);
   background: var(--md-primary, #0173df);
-  animation: check-15 0.3s ease;
 }
 
- .metrics-checkbox .inp-cbx:checked + .cbx .checkbox:first-child svg {
+.metrics-checkbox .inp-cbx:checked + .cbx .checkbox svg {
   stroke-dashoffset: 0;
 }
 
- .metrics-checkbox .inp-cbx:checked + .cbx .checkbox:first-child:before {
+.metrics-checkbox .inp-cbx:checked + .cbx .checkbox:before,
+.metrics-radio .inp-radio:checked + .radio-label .radio:before {
   transform: scale(2.2);
   opacity: 0;
   transition: all 0.3s ease;
 }
 
-/* ─── Radio ─────────────────────────────────────────────── */
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
- .metrics-radio {
-  padding: 0;
-  display: flex;
-  align-items: center;
-}
-
- .metrics-radio .radio-label {
-  user-select: none;
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 55px;
-  cursor: pointer;
-}
-
- .metrics-radio .radio-label .radio {
-  position: relative;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid var(--md-border, #e7e7e7);
-  transition: all 0.2s ease;
-}
-
- .metrics-radio .radio-label .radio svg {
+.metrics-radio .radio-label .radio svg {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -136,59 +116,38 @@
   transition-delay: 0.1s;
 }
 
- .metrics-radio .radio-label .radio:before {
-  content: "";
-  width: 100%;
-  height: 100%;
-  transform: scale(0);
-  opacity: 1;
-  border-radius: 50%;
-  transition-delay: 0.2s;
-}
-
- .metrics-radio .inp-radio {
-  display: none;
-}
-
- .metrics-radio .inp-radio:checked + .radio-label .radio:first-child {
-  border-color: var(--md-primary, #0173df);
-  background: var(--md-primary, #0173df);
-}
-
- .metrics-radio .inp-radio:checked + .radio-label .radio:first-child svg {
+.metrics-radio .inp-radio:checked + .radio-label .radio svg {
   opacity: 1;
 }
 
- .metrics-radio .inp-radio:checked + .radio-label .radio:first-child:before {
-  transform: scale(2.2);
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
-/* ─── Form Controls ────────────────────────────────────────── */
-
- .metrics-btn,
- .metrics-select,
- .metrics-input {
+/* ─── Shared Controls ───────────────────────────────────────── */
+.metrics-btn,
+.metrics-select,
+.metrics-input {
   border: 1px solid var(--md-border, #e7e7e7);
   color: var(--md-text-muted, #888888);
-  padding: 0 10px;
-  height: var(--input-height, 30px);
+  padding: 0 var(--md-space-sm, 8px);
+  height: var(--md-input-height, 30px);
   outline: none;
+  background-color: var(--md-surface, #ffffff);
+  font-size: var(--md-font-size-base, 14px);
+  border-radius: var(--md-radius, 8px);
 }
 
- .metrics-btn:focus,
- .metrics-select:focus,
- .metrics-input:focus {
+.metrics-btn:focus,
+.metrics-select:focus,
+.metrics-input:focus {
   border-color: var(--md-border, #e7e7e7);
   box-shadow: none;
   color: var(--md-text, #63634e);
 }
+
 .metrics-btn.primary {
   background-color: var(--md-primary, #0173df);
-  color: white;
+  color: var(--md-surface, #ffffff);
 }
- .metrics-select {
+
+.metrics-select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -202,110 +161,101 @@
   cursor: pointer;
 }
 
- .metrics-select option {
+.metrics-select option {
   padding: 0.5rem;
   background-color: var(--md-surface, #ffffff);
   color: var(--md-text, #63634e);
   border: 1px solid var(--md-border, #e7e7e7);
 }
 
- .metrics-select:focus {
+.metrics-select:focus {
   box-shadow: var(--md-focus-shadow, 0 0 0 2px rgba(0, 123, 255, 0.25));
 }
 
-/* ─── Button ───────────────────────────────────────────────── */
-
- .metrics-btn {
+.metrics-btn {
   background-color: var(--md-surface, #ffffff);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: var(--md-space-xs, 5px);
   border: 1px solid var(--md-border, #e7e7e7);
   color: var(--md-text, #63634e);
 }
 
- .metrics-btn svg {
+.metrics-btn svg {
   width: 14px;
 }
 
- .metrics-btn i {
+.metrics-btn i,
+.metrics-btn span {
   color: var(--md-text-muted, #888888);
 }
 
- .metrics-btn span {
-  color: var(--md-text-muted, #888888);
-}
-
- .metrics-btn:focus {
+.metrics-btn:focus,
+.metrics-btn:hover {
   box-shadow: none;
   background-color: var(--md-surface-alt, #f5f5f5);
 }
 
- .metrics-btn:disabled {
+.metrics-btn:disabled {
   border-color: var(--md-surface-alt, #f5f5f5);
 }
 
- .metrics-btn:hover {
-  background-color: var(--md-surface-alt, #f5f5f5);
-}
-
- .metrics-btn.no-bg {
+.metrics-btn.no-bg {
   border: none !important;
 }
 
 /* ─── Tags ─────────────────────────────────────────────────── */
-
- .metrics-tag {
+.metrics-tag {
   border-radius: var(--md-radius, 8px);
   padding: 4px;
-  font-size: var(--font-size-sm);
-  background: var(--md-card-bg, #ffffff);
+  font-size: var(--md-font-size-sm, 10px);
+  background-color: var(--md-card-bg, #ffffff);
   color: var(--md-text, #63634e);
   text-transform: uppercase;
-  height: auto;
   width: fit-content;
-  gap: var(--space-sm, 5px);
-
- display: flex;
+  display: flex;
   align-items: center;
   justify-content: center;
+  gap: var(--md-space-sm, 5px);
 }
- .metrics-tag .metrics-btn {
-padding: 0;
-border: none;
-cursor: pointer;
-height: auto;
- }
- 
- .metrics-tag.primary {
-  background-color: var(--md-primary, #0173df);
-  color: white;
- }
- .metrics-tag.primary .metrics-btn {
-  color: white;
-  background:none;
- }
- .metrics-tag.primary .metrics-btn svg {
-  fill: white;
- }
-/* ─── Progress Bar ─────────────────────────────────────────── */
 
- .progress {
+.metrics-tag .metrics-btn {
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  height: auto;
+}
+
+.metrics-tag.primary {
+  background-color: var(--md-primary, #0173df);
+  color: var(--md-surface, #ffffff);
+}
+
+.metrics-tag.primary .metrics-btn {
+  color: var(--md-surface, #ffffff);
+  background: none;
+}
+
+.metrics-tag.primary .metrics-btn svg {
+  fill: var(--md-surface, #ffffff);
+}
+
+/* ─── Progress Bar ─────────────────────────────────────────── */
+.progress {
   height: 2px;
   overflow: inherit;
   background-color: var(--md-border-light, #e7e7e7);
-  margin-top: 0px;
+  margin-top: 0;
 }
 
- .progress .progress-bar {
+.progress .progress-bar {
   height: 100%;
   position: relative;
   overflow: inherit;
-  
 }
 
- .progress .progress-bar .metrics-tag {
+.progress .progress-bar .metrics-tag {
   width: auto;
   height: auto;
   position: absolute;
@@ -315,5 +265,4 @@ height: auto;
   opacity: 0.9;
   margin: 0;
   transition: 0.4s;
-  
 }

@@ -1,0 +1,63 @@
+:root {
+  /* Core colors */
+  --md-bg: #ffffff;
+  --md-surface: #ffffff;
+  --md-surface-alt: #f5f7fa;
+  --md-card-bg: #ffffff;
+  --md-header-bg: #ffffff;
+  --md-table-header-bg: #f8fafc;
+  --md-grid-bg: #f9f9f9;
+  --md-pipeline-bg: #f5f7fa;
+
+  /* Text colors */
+  --md-text: #63634e;
+  --md-text-muted: #888888;
+  --md-heading: #212529;
+
+  /* Status variables */
+  --md-status-text: initial;
+  --md-status-bg: initial;
+  --md-status-border: initial;
+
+  /* Spacing */
+  --md-space-xxs: 4px;
+  --md-space-xs: 5px;
+  --md-space-sm: 8px;
+  --md-space-base: 10px;
+  --md-space-md: 15px;
+  --md-space-lg: 20px;
+
+  /* Radius */
+  --md-radius: 8px;
+  --md-card-radius: 10px;
+
+  /* Shadows */
+  --md-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
+  --md-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --md-card-hover-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  --md-date-shadow: 0 24px 60px rgba(28, 41, 70, 0.12);
+  --md-focus-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+
+  /* Typography */
+  --md-font-size-sm: 10px;
+  --md-font-size-base: 14px;
+  --md-font-size-md: 16px;
+  --md-font-size-lg: 18px;
+
+  /* Sizes */
+  --md-input-height: 30px;
+  --md-filter-footer-height: 70px;
+
+  /* Transitions */
+  --md-transition-base: 0.2s ease;
+
+  /* Component tokens */
+  --md-primary: #0173df;
+  --md-success: #28a745;
+  --md-warning: #f1a10a;
+  --md-info: #17a2b8;
+  --md-danger: #dc3545;
+  --md-border: #e7e7e7;
+  --md-border-light: #e3e6ea;
+  --md-overlay: rgba(0, 0, 0, 0.5);
+}

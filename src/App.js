@@ -7,6 +7,11 @@ const statusMap = {
     background: '#fef3c7',
     border: '#f59e0b',
   },
+  'high priority': {
+    text: '#b91c1c',
+    background: '#fee2e2',
+    border: '#ef4444',
+  },
   completed: {
     text: '#065f46',
     background: '#d1fae5',
@@ -17,6 +22,7 @@ const statusMap = {
     background: '#dbeafe',
     border: '#3b82f6',
   },
+  
 };
 
 const theme = {
@@ -181,7 +187,7 @@ function App() {
           { icon: 'bi bi-hourglass-split', card: 'pending' },
           { icon: 'bi bi-arrow-repeat', card: 'inprogress' },
           { icon: 'bi bi-graph-up', card: 'marketing' },
-          { icon: 'bi bi-graph-down', card: 'Sales Team' },
+          { icon: 'bi bi-graph-down', card: 'high Priority' },
         ]}
         paginated
         showFooter

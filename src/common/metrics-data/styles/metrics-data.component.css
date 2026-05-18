@@ -1,12 +1,12 @@
 /* ─── IMPORTS ─────────────────────────────────────────────── */
-@import './metrics-data.variables.css';
-@import './metrics-data.table.css';
-@import './metrics-data.grid.css';
-@import './metrics-data.pipeline.css';
-@import './metrics-data.kpis.css';
-@import './metrics-status.css';
-@import './metrics-form.controls.css';
-@import './metrics-data.filter.css';
+@import "./metrics-data.variables.css";
+@import "./metrics-data.table.css";
+@import "./metrics-data.grid.css";
+@import "./metrics-data.pipeline.css";
+@import "./metrics-data.kpis.css";
+@import "./metrics-status.css";
+@import "./metrics-form.controls.css";
+@import "./metrics-data.filter.css";
 
 .generic-font-size {
   font-size: var(--md-font-size-base, 14px);
@@ -29,7 +29,7 @@
 .metrics-group.wrap {
   flex-wrap: wrap;
   gap: var(--md-space-xxs, 2px);
- }
+}
 
 .metrics-group.gap {
   gap: 10px;
@@ -145,7 +145,6 @@
   border-radius: 0px 0 0 !important;
 }
 
-
 .metrics-data.collapsed .metrics-body {
   max-height: 0;
   opacity: 0;
@@ -158,15 +157,7 @@
 .metrics-data .metrics-body {
   transition: 0.4s;
   width: 100%;
-
 }
-
-
-
-
-
-
-
 
 /* ─── Text Utilities ───────────────────────────────────────── */
 
@@ -235,10 +226,10 @@
 }
 
 .metrics-data .media-tile .media-img {
-border: 3px solid;
+  border: 3px solid;
   width: 40px;
   height: 40px;
-  border-radius:10px ;
+  border-radius: 10px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -248,14 +239,11 @@ border: 3px solid;
   font-weight: bold;
 }
 
-
 .metrics-data .media-tile .media-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
-
 
 .metrics-data .media-tile p {
   margin: 0;
@@ -327,7 +315,10 @@ border: 3px solid;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .metrics-data .day-btn:hover {
@@ -340,7 +331,6 @@ border: 3px solid;
   color: var(--md-surface, #ffffff);
   border-color: var(--md-primary, #0173df);
 }
-
 
 /* ─── Dropdown ─────────────────────────────────────────────── */
 
@@ -377,7 +367,9 @@ border: 3px solid;
   margin: 0;
   list-style: none;
   box-shadow: var(--shadow-card);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
   opacity: 0;
   transform: translateY(5px);
   pointer-events: none;

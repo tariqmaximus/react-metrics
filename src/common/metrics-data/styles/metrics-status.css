@@ -1,4 +1,3 @@
-
 /* Custom status overrides for theme variables */
 
 .metrics-data .metrics-tag.metrics-status,
@@ -7,7 +6,6 @@
 .metrics-data .metrics-headers.metrics-status {
   color: var(--md-status-text);
   background-color: var(--md-status-bg);
-  
 }
 .metrics-data .media-tile .media-img {
   border-color: var(--md-status-border, var(--md-border));
@@ -17,7 +15,7 @@
 /* Table-specific custom status overrides */
 .metrics-data .media-tile .media-img.metrics-status {
   border-color: var(--md-status-bg);
-  background-color:var(--md-status-border);
+  background-color: var(--md-status-border);
   color: white;
 }
 .metrics-status .metrics-tag {

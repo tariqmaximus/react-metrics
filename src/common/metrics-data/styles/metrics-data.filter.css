@@ -125,7 +125,9 @@
   display: flex;
   min-height: 100%;
   flex-direction: column;
-  padding-bottom: calc(var(--md-filter-footer-height, 70px) + var(--md-space-lg, 15px));
+  padding-bottom: calc(
+    var(--md-filter-footer-height, 70px) + var(--md-space-lg, 15px)
+  );
 }
 
 /* ─── Header ───────────────────────────────────────────────── */
@@ -215,6 +217,3 @@
   color: var(--md-text-muted, #888888);
   font-weight: 500;
 }
-
-
-

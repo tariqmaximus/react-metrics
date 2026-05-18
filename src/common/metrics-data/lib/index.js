@@ -1,2 +1,1 @@
-
-export { default as MetricsData } from './MetricsData';
+export { default as MetricsData } from "./MetricsData";

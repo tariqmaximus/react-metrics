@@ -50,6 +50,15 @@
 
   /* Transitions */
   --md-transition-base: 0.2s ease;
+  --transition-default: var(--md-transition-base);
+  --transition-fast: 0.15s ease;
+
+  --color-text: var(--md-text);
+  --color-primary: var(--md-primary);
+  --color-white: #ffffff;
+  --color-surface-alt: var(--md-surface-alt);
+  --font-size-base: var(--md-font-size-base);
+  --font-size-sm: var(--md-font-size-sm);
 
   /* Component tokens */
   --md-primary: #0173df;

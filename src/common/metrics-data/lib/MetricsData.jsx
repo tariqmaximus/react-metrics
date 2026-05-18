@@ -316,9 +316,14 @@ export default function MetricsData(props) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [datePicker, setDatePicker] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentPageSize, setCurrentPageSize] = useState(pageSize);
   const [sortKey, setSortKey] = useState(null);
   const [sortAsc, setSortAsc] = useState(true);
   const [dropdownShownIndex, setDropdownShownIndex] = useState(null);
+
+  useEffect(() => {
+    setCurrentPageSize(pageSize);
+  }, [pageSize]);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [activeRowIndex, setActiveRowIndex] = useState(null);
@@ -465,10 +470,13 @@ export default function MetricsData(props) {
     customFilterValues,
   ]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
+  const totalPages = Math.max(1, Math.ceil(filteredData.length / currentPageSize));
 
   const pagedData = paginated
-    ? filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+    ? filteredData.slice(
+        (currentPage - 1) * currentPageSize,
+        currentPage * currentPageSize,
+      )
     : filteredData;
 
   const viewButtons = useMemo(() => {
@@ -1112,17 +1120,20 @@ export default function MetricsData(props) {
           <tfoot>
             <tr>
               <td>
-              <div class="metrics-btn-group">
-                <select class="metrics-input" value={selectedOption} onChange={(e) => setSelectedOption(e.target.value)}>
-                  <option value="">All</option>
-                  <option value="">10</option>
-                  <option value="">20</option>
-                  <option value="">30</option>
+                <div className="metrics-btn-group">
+                  <select
+                    className="metrics-select"
+                    value={currentPageSize}
+                    onChange={(e) => setCurrentPageSize(Number(e.target.value))}
+                  >
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                    <option value={30}>30</option>
                   </select>
                 </div>
-</td>
+              </td>
               <td colSpan={Math.max(columns.length - 1, 1)}>
-                <div className="pagination metrics-btn-group align-right">
+                <div className="pagination metrics-btn-group w-100 align-right">
                   <button
                     className="metrics-btn"
                     type="button"

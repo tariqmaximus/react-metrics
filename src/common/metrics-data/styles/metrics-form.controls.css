@@ -203,6 +203,7 @@
 
 .metrics-btn.no-bg {
   border: none !important;
+  background: none !important;
 }
 
 /* ─── Tags ─────────────────────────────────────────────────── */

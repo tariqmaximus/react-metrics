@@ -181,6 +181,7 @@ function App() {
           { icon: 'bi bi-hourglass-split', card: 'pending' },
           { icon: 'bi bi-arrow-repeat', card: 'inprogress' },
           { icon: 'bi bi-graph-up', card: 'marketing' },
+          { icon: 'bi bi-graph-down', card: 'Sales Team' },
         ]}
         paginated
         showFooter

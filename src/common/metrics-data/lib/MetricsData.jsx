@@ -656,6 +656,26 @@ export default function MetricsData(props) {
           </span>
         );
 
+      case 'priority':
+        const priorityTheme = getStatusTheme(row.priority);
+        // Provide sensible defaults when statusMap doesn't include priority keys
+        const priorityKey = String(row.priority || '').toLowerCase().trim();
+        const defaultPriorityStyles = {
+          high: { '--md-status-text': 'var(--md-danger)', '--md-status-bg': '#fee2e2', '--md-status-border': 'var(--md-danger)' },
+          medium: { '--md-status-text': 'var(--md-warning)', '--md-status-bg': '#fff7ed', '--md-status-border': 'var(--md-warning)' },
+          low: { '--md-status-text': 'var(--md-success)', '--md-status-bg': '#ecfdf5', '--md-status-border': 'var(--md-success)' },
+        };
+
+        const appliedPriorityStyle = (priorityTheme.style && Object.keys(priorityTheme.style).length)
+          ? priorityTheme.style
+          : (defaultPriorityStyles[priorityKey] || {});
+
+        return (
+          <span className={`metrics-tag metrics-status`} style={appliedPriorityStyle}>
+            {getValue(row, 'priority')}
+          </span>
+        );
+
       case 'progress':
         const progress = getRowProgress(row);
         if (progress !== null) {
@@ -963,7 +983,7 @@ export default function MetricsData(props) {
                     aria-valuemin="0"
                     aria-valuemax="100"
                   >
-                    <p className="metrics-tag">{progress}%</p>
+                    <p className="metrics-tag metrics-status">{progress}%</p>
                   </div>
                 </div>
               </div>
@@ -1040,6 +1060,12 @@ export default function MetricsData(props) {
               const cardClass = statusTheme.className === 'metrics-status'
                 ? 'metrics-kpi-card metrics-status'
                 : `metrics-kpi-card ${statusTheme.className}`;
+              const changeValue = typeof kpi.change === 'number'
+                ? `${kpi.change > 0 ? '+' : ''}${kpi.change}%`
+                : String(kpi.change).trim();
+              const changeArrowPath = kpi.changeClass === 'negative'
+                ? 'M2.5 3.75 L5 6.25 L7.5 3.75'
+                : 'M7.5 6.25 L5 3.75 L2.5 6.25';
 
               return (
                 <div key={`kpi-${kpi.cardKey}-${kpi.index}`} className={cardClass} style={statusTheme.style}>
@@ -1048,10 +1074,15 @@ export default function MetricsData(props) {
                       {kpi.icon && <i className={`metrics-kpi-icon ${kpi.icon}`} />}
                     </div>
                     {kpi.change !== undefined && (
-                      <span className={`metrics-kpi-change ${kpi.changeClass}`}>{kpi.change}</span>
+                      <span className={`metrics-kpi-change ${kpi.changeClass}`}>
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d={changeArrowPath} stroke="currentColor" strokeWidth="1.04" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        {changeValue}
+                      </span>
                     )}
                   </div>
-
+<div className='metrics-kpi-footer'>
                   <div className="metrics-kpi-content">
                     <p className="metrics-kpi-value">{kpi.value}</p>
                     <span className="metrics-kpi-label">{kpi.label}</span>
@@ -1069,6 +1100,7 @@ export default function MetricsData(props) {
                       <path d="M0 34 C20 24, 40 18, 60 22 C75 26, 88 16, 100 12 L100 50 L0 50 Z" fill={`url(#kpiGradient-${kpi.index})`} />
                       <path d="M0 34 C20 24, 40 18, 60 22 C75 26, 88 16, 100 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                     </svg>
+                  </div>
                   </div>
                 </div>
               );
@@ -1249,7 +1281,7 @@ export default function MetricsData(props) {
                     aria-valuemin="0"
                     aria-valuemax="100"
                   >
-                    <p className="metrics-tag">{progressValue}%</p>
+                    <p className="metrics-tag metrics-status">{progressValue}%</p>
                   </div>
                 </div>
               );

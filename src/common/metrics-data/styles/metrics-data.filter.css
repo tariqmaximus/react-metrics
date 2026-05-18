@@ -50,7 +50,7 @@
 .metrics-accordion-section {
   display: flex;
   flex-direction: column;
-  gap: var(--md-space-sm, 8px);
+  gap: var(--md-space-sm, 5px);
 }
 
 .metrics-accordion-btn {
@@ -144,7 +144,7 @@
   padding: 0;
   border-bottom: 1px solid var(--md-border, #e7e7e7);
   height: 60px;
-  border-radius: var(--md-radius, 8px) var(--md-radius, 8px) 0 0;
+  border-radius: var(--md-radius, 5px) var(--md-radius, 5px) 0 0;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -201,7 +201,7 @@
   flex: 1;
   padding: 0.5rem;
   border: 1px solid var(--md-border, #e7e7e7);
-  border-radius: var(--md-radius, 8px);
+  border-radius: var(--md-radius, 5px);
   background-color: var(--md-surface, #ffffff);
   color: var(--md-text, #63634e);
   font-size: var(--md-font-size-base, 14px);

@@ -16,19 +16,7 @@
 .metrics-group {
   display: flex;
   align-items: stretch;
-}
-.metrics-group.gap-sm {
-  gap: var(--md-space-sm, 8px);
-}
-.metrics-group.gap-md {
-  gap: var(--md-space-md, 15px);
-}
-.metrics-group.gap-lg {
-  gap: var(--md-space-lg, 20px);
-}
-.metrics-group.wrap {
-  flex-wrap: wrap;
-  gap: var(--md-space-xxs, 2px);
+  width: 100%;
 }
 
 .metrics-group.gap {
@@ -64,61 +52,86 @@
 .metrics-btn-group.sm {
   height: 30px !important;
 }
-
-/* ─── Button Group ─────────────────────────────────────────── */
+/* ──────────────────────────────────────────────────────────
+   Button Group
+────────────────────────────────────────────────────────── */
 
 .metrics-btn-group {
-  display: flex;
+  display: inline-flex;
   align-items: stretch;
   gap: 0;
+  width: 100%;
   height: 30px;
 }
 
+/* Base Button Styles */
 .metrics-btn-group > * {
+  border-radius: 0 !important;
   border-left: none !important;
-  transition: var(--transition-default);
+  transition:
+    background-color var(--transition-default),
+    color var(--transition-default),
+    border-color var(--transition-default);
 }
 
+/* First Button */
 .metrics-btn-group > *:first-child {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-radius:
+    var(--md-radius, 5px)
+    0
+    0
+    var(--md-radius, 5px) !important;
+
   border-left: 1px solid var(--md-border, #e7e7e7) !important;
 }
 
+/* Last Button */
 .metrics-btn-group > *:last-child {
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+  border-radius:
+    0
+    var(--md-radius, 5px)
+    var(--md-radius, 5px)
+    0 !important;
 }
 
+/* Single Button */
+.metrics-btn-group > *:only-child {
+  border-radius: var(--md-radius, 5px) !important;
+}
+
+/* Focus State */
 .metrics-btn-group > *:focus {
   outline: none;
   box-shadow: none;
 }
 
+/* Active Click State */
 .metrics-btn-group > *:active {
   border-color: var(--md-border, #e7e7e7);
 }
 
+/* Active Selected State */
 .metrics-btn-group > *.active {
   background-color: var(--color-surface-alt);
   color: var(--color-text);
 }
 
+/* Active Text */
 .metrics-btn-group > *.active span {
   color: var(--color-text);
 }
 
+/* Active Icon */
 .metrics-btn-group > *.active i {
   color: var(--color-primary);
 }
-
 /* ─── Root Table Component ─────────────────────────────────── */
 
 .metrics-data {
   position: relative;
   font-family: Arial, Helvetica, sans-serif;
   font-size: var(--font-size-base);
-  border-radius: var(--md-radius, 8px);
+  border-radius: var(--md-radius, 5px);
   background-color: var(--md-bg, #ffffff);
   min-height: 60px;
   padding-bottom: 0;
@@ -269,15 +282,15 @@
   padding: 20px;
   background-color: var(--md-card-bg, #ffffff);
   border: 1px solid var(--md-border-light, #e3e6ea);
-  border-radius: var(--md-card-radius, 18px);
+  border-radius: var(--md-card-radius, 15px);
   box-shadow: var(--md-date-shadow, 0 24px 60px rgba(28, 41, 70, 0.12));
 }
 
 .metrics-data .date-picker .d-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 18px;
+  gap: 5px;
+  margin-top: 15px;
 }
 
 .metrics-data .date-picker .d-grid .text-center {
@@ -302,11 +315,11 @@
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 18px;
+  margin-top: 15px;
 }
 
 .metrics-data .day-btn {
-  min-height: 38px;
+  min-height: 35px;
   padding: 0 12px;
   background-color: var(--md-surface-alt, #f8fafc);
   border: 1px solid var(--md-border-light, #d2d8de);

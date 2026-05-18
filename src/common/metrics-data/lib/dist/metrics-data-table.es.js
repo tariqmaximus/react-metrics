@@ -1863,10 +1863,10 @@ function qs(k) {
           "--md-table-header-bg": v.tableHeaderBg || "#ffffff",
           "--md-grid-bg": v.gridBg || "#f9f9f9",
           "--md-pipeline-bg": v.pipelineBg || "#f5f7fa",
-          "--md-radius": v.radius || "8px",
+          "--md-radius": v.radius || "5px",
           "--md-card-radius": v.cardRadius || "10px",
           "--md-shadow": v.shadow || "0 0px 16px rgba(0, 0, 0, 0.1)",
-          "--md-card-shadow": v.cardShadow || "0 2px 8px rgba(0, 0, 0, 0.04)",
+          "--md-card-shadow": v.cardShadow || "0 2px 5px rgba(0, 0, 0, 0.04)",
           "--md-card-hover-shadow": v.cardHoverShadow || "0 12px 32px rgba(0, 0, 0, 0.12)",
           ...v.variables
         },

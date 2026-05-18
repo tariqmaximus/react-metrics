@@ -22,18 +22,18 @@
   /* Spacing */
   --md-space-xxs: 4px;
   --md-space-xs: 5px;
-  --md-space-sm: 8px;
+  --md-space-sm: 5px;
   --md-space-base: 10px;
   --md-space-md: 15px;
   --md-space-lg: 20px;
 
   /* Radius */
-  --md-radius: 8px;
+  --md-radius: 5px;
   --md-card-radius: 10px;
 
   /* Shadows */
   --md-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
-  --md-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --md-card-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
   --md-card-hover-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
   --md-date-shadow: 0 24px 60px rgba(28, 41, 70, 0.12);
   --md-focus-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
@@ -42,7 +42,7 @@
   --md-font-size-sm: 10px;
   --md-font-size-base: 14px;
   --md-font-size-md: 16px;
-  --md-font-size-lg: 18px;
+  --md-font-size-lg: 15px;
 
   /* Sizes */
   --md-input-height: 30px;

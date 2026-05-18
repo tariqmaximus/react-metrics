@@ -17,7 +17,7 @@
 
   background-color: var(--md-card-bg, #ffffff);
   color: var(--md-text, #111827);
-  box-shadow: var(--md-card-shadow, 0 2px 8px rgba(0, 0, 0, 0.04));
+  box-shadow: var(--md-card-shadow, 0 2px 5px rgba(0, 0, 0, 0.04));
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
@@ -35,7 +35,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: var(--md-space-sm, 8px);
+  gap: var(--md-space-sm, 5px);
 }
 
 .metrics-kpi-icon-wrapper {
@@ -78,7 +78,7 @@
 }
 
 .metrics-kpi-content {
-  padding-top: var(--md-space-sm, 8px);
+  padding-top: var(--md-space-sm, 5px);
   max-width: 220px;
 }
 

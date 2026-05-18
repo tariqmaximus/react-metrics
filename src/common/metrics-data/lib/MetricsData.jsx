@@ -1111,8 +1111,16 @@ export default function MetricsData(props) {
         {paginated && (
           <tfoot>
             <tr>
-              <td>{footerComponent}</td>
-
+              <td>
+              <div class="metrics-btn-group">
+                <select class="metrics-input" value={selectedOption} onChange={(e) => setSelectedOption(e.target.value)}>
+                  <option value="">All</option>
+                  <option value="">10</option>
+                  <option value="">20</option>
+                  <option value="">30</option>
+                  </select>
+                </div>
+</td>
               <td colSpan={Math.max(columns.length - 1, 1)}>
                 <div className="pagination metrics-btn-group align-right">
                   <button
@@ -1464,12 +1472,12 @@ export default function MetricsData(props) {
           "--md-grid-bg": theme.gridBg || "#f9f9f9",
           "--md-pipeline-bg": theme.pipelineBg || "#f5f7fa",
 
-          "--md-radius": theme.radius || "8px",
+          "--md-radius": theme.radius || "5px",
           "--md-card-radius": theme.cardRadius || "10px",
 
           "--md-shadow": theme.shadow || "0 0px 16px rgba(0, 0, 0, 0.1)",
           "--md-card-shadow":
-            theme.cardShadow || "0 2px 8px rgba(0, 0, 0, 0.04)",
+            theme.cardShadow || "0 2px 5px rgba(0, 0, 0, 0.04)",
           "--md-card-hover-shadow":
             theme.cardHoverShadow || "0 12px 32px rgba(0, 0, 0, 0.12)",
 

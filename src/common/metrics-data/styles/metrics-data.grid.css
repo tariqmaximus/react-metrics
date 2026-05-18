@@ -29,7 +29,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 765px) {
   .view-grid {
     padding: var(--md-space-sm);
   }

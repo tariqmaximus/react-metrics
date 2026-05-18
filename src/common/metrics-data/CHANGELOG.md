@@ -1,4 +1,4 @@
-# Changelog for metrics-data-table
+# Changelog for metrics-data
 
 All notable changes to this package will be documented in this file.
 
@@ -12,7 +12,7 @@ All notable changes to this package will be documented in this file.
 - README section documenting `customFilter.fields` schema and example.
 
 ### Changed
-- Updated `lib/package.json` exports and publish config for `metrics-data-table`.
+- Updated `lib/package.json` exports and publish config for `metrics-data`.
 
 ### Fixed
 - Resolved mixed CSS token usage and improved theming variable coverage.

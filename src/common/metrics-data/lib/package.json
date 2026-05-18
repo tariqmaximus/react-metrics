@@ -1,14 +1,14 @@
 {
-  "name": "metrics-data-table",
+  "name": "metrics-data",
   "version": "1.0.0",
   "description": "Reusable React metrics data table with table, grid and pipeline views",
-  "main": "dist/metrics-data-table.umd.js",
-  "module": "dist/metrics-data-table.es.js",
+  "main": "dist/metrics-data.umd.js",
+  "module": "dist/metrics-data.es.js",
   "types": "index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/metrics-data-table.es.js",
-      "require": "./dist/metrics-data-table.umd.js",
+      "import": "./dist/metrics-data.es.js",
+      "require": "./dist/metrics-data.umd.js",
       "types": "./index.d.ts"
     }
   },
@@ -39,7 +39,7 @@
     "react",
     "table",
     "metrics",
-    "metrics-data-table",
+    "metrics-data",
     "data-grid",
     "pipeline"
   ],

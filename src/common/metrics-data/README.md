@@ -1,15 +1,15 @@
-# metrics-data-table
+# metrics-data
 
 A reusable React metrics data library built for table, grid, and pipeline reporting scenarios. The package is designed for healthcare, revenue cycle management (RCM), claim operations, and EHR dashboards.
 
 ## Package name
 
-`metrics-data-table`
+`metrics-data`
 
 ## Consumer import
 
 ```js
-import { MetricsData } from 'metrics-data-table';
+import { MetricsData } from 'metrics-data';
 ```
 
 ## Local development path
@@ -43,7 +43,7 @@ src/common/metrics-data
 ## Installation
 
 ```bash
-npm install metrics-data-table
+npm install metrics-data
 npm install bootstrap-icons
 ```
 
@@ -52,7 +52,7 @@ npm install bootstrap-icons
 ```jsx
 import React from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { MetricsData } from 'metrics-data-table';
+import { MetricsData } from 'metrics-data';
 
 export default function App() {
   return (

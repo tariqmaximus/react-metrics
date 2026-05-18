@@ -8,7 +8,7 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, "index.js"),
       name: "MetricsDataTable",
-      fileName: (format) => `metrics-data-table.${format}.js`,
+      fileName: (format) => `metrics-data.${format}.js`,
       formats: ["es", "umd"],
     },
     rollupOptions: {

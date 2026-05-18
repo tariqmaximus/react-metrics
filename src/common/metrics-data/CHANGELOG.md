@@ -16,3 +16,4 @@ All notable changes to this package will be documented in this file.
 
 ### Fixed
 - Resolved mixed CSS token usage and improved theming variable coverage.
+- Fixed invalid hook errors caused by a duplicate `react` copy in `src/common/metrics-data/lib/node_modules` during local development.

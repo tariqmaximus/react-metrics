@@ -24,3 +24,4 @@ yarn-error.log*
 
 # Ignore nested package node_modules for the local library
 /src/common/metrics-data/lib/node_modules/
+/src/common/metrics-data/lib/package-lock.json

@@ -16,6 +16,8 @@ import { MetricsData } from 'metrics-data';
 
 `src/common/metrics-data`
 
+> Note: Do not install a separate `node_modules` inside `src/common/metrics-data/lib` while running the root app. A nested copy of `react` can cause invalid hook call errors.
+
 ## Folder structure
 
 ```

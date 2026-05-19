@@ -1161,29 +1161,31 @@ export default function MetricsData(props) {
             <tfoot>
               <tr>
                 <td>
-                  <div className="metrics-btn-group">
-                    <select
-                      className="metrics-select"
-                      value={currentPageSize}
-                      onChange={(e) => setCurrentPageSize(Number(e.target.value))}
-                    >
-                      <option value={10}>10</option>
-                      <option value={20}>20</option>
-                      <option value={30}>30</option>
-                    </select>
-                  </div>
+                 {footerComponent}
                 </td>
                 <td colSpan={Math.max(totalTableColumns - 1, 1)}>
                   <div className="pagination metrics-btn-group w-100 align-right">
-                    <button
-                      className="metrics-btn"
-                      type="button"
-                      onClick={() =>
-                        setCurrentPage((prev) => Math.max(prev - 1, 1))
-                      }
-                      disabled={currentPage === 1}
-                    >
-                      <svg
+                     {totalPages > 1 && (
+      <select
+        className="metrics-select"
+        value={currentPage}
+        onChange={(e) => setCurrentPage(Number(e.target.value))}
+      >
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+          <option key={page} value={page}>
+            {page}
+          </option>
+        ))}
+      </select>
+    )}
+                     <button
+      className="metrics-btn"
+      type="button"
+      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+    >
+          
+                            <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
                         height="16"
@@ -1196,22 +1198,17 @@ export default function MetricsData(props) {
                           d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
                         />
                       </svg>
-                    </button>
+    </button>
 
-                    <span className="metrics-btn">
-                      Page {currentPage} of {totalPages}
-                    </span>
+    
 
-                    <button
-                      className="metrics-btn"
-                      type="button"
-                      onClick={() =>
-                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                      }
-                      disabled={currentPage === totalPages}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
+    <button
+      className="metrics-btn"
+      type="button"
+      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+      disabled={currentPage === totalPages}
+    >
+<svg xmlns="http://www.w3.org/2000/svg"
                         width="16"
                         height="16"
                         fill="currentColor"
@@ -1222,8 +1219,11 @@ export default function MetricsData(props) {
                           fillRule="evenodd"
                           d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"
                         />
-                      </svg>
-                    </button>
+                        </svg>
+    </button>
+
+    {/* Optional: Dropdown for jumping to page */}
+   
                   </div>
                 </td>
               </tr>

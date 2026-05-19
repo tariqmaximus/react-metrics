@@ -705,7 +705,12 @@ export default function MetricsData(props) {
     </div>
   );
 
-  const renderMediaTile = (row, index, showMobileToggle = false) => {
+  const renderMediaTile = (
+    row,
+    index,
+    showMobileToggle = false,
+    showCheckbox = true,
+  ) => {
     const rowKey = getRowKey(row);
     const imageFailed = imageLoadFailedMap[rowKey];
     const imageSrc = row.mediaTile || mediaImage;
@@ -713,11 +718,12 @@ export default function MetricsData(props) {
 
     return (
       <div className="metrics-group">
-        {renderCheckbox({
-          id: `${internalIdPrefix}-cbx-${index}`,
-          checked: selectedRows.includes(row),
-          onChange: (checked) => toggleSelectRow(row, checked),
-        })}
+        {showCheckbox &&
+          renderCheckbox({
+            id: `${internalIdPrefix}-cbx-${index}`,
+            checked: selectedRows.includes(row),
+            onChange: (checked) => toggleSelectRow(row, checked),
+          })}
 
         <div className="media-tile">
           <div
@@ -831,7 +837,7 @@ export default function MetricsData(props) {
   const renderTableCell = (row, column, rowIndex) => {
     switch (column.key) {
       case "mediaTile":
-        return renderMediaTile(row, rowIndex, true);
+        return renderMediaTile(row, rowIndex, true, currentViewType !== "table");
 
       case "status":
         const statusTheme = getStatusTheme(row.status);
@@ -1031,166 +1037,202 @@ export default function MetricsData(props) {
     );
   };
 
-  const renderTableTemplate = () => (
-    <div className="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            {columns.map((column, colIndex) => (
+  const renderTableTemplate = () => {
+    const idColumn = columns.find((column) => column.key === "id");
+    const tableColumns = columns.filter((column) => column.key !== "id");
+    const idColumnDef = idColumn || { key: "id", label: "ID" };
+    const totalTableColumns = tableColumns.length + 2;
+
+    return (
+      <div className="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th className="checkbox-col" >
+                <div className="metrics-group justify-center">
+                  {renderCheckbox({
+                    id: `${internalIdPrefix}-cbx-header`,
+                    checked: isAllSelected,
+                    onChange: toggleAllRows,
+                    children: selectedRows.length > 1 && (
+                      <div className="metrics-dropdown">
+                        <button
+                          className="metrics-btn no-bg"
+                          type="button"
+                          onClick={(event) => toggleDropdown("bulk", event)}
+                        >
+                          <ThreeDotsIcon />
+                        </button>
+
+                        <ul
+                          className={`dropdown-menu ${dropdownShownIndex === "bulk" ? "show" : ""}`}
+                        >
+                          {actionButtons.map((btn) => (
+                            <li key={btn.label}>
+                              <button
+                                className="dropdown-item"
+                                type="button"
+                                onClick={() => handleBulkAction(btn)}
+                              >
+                                {btn.label}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ),
+                  })}
+                </div>
+              </th>
+
               <th
-                key={column.key}
-                onClick={() => sorting && handleSortBy(column.key)}
-                className="text-nowrap text-start align-middle"
+                className=""
+                onClick={() => sorting && handleSortBy(idColumnDef.key)}
                 style={{ cursor: sorting ? "pointer" : "default" }}
-                scope="col"
+                
               >
                 <div className="sorting-group">
-                  {colIndex === 0 &&
-                    renderCheckbox({
-                      id: `${internalIdPrefix}-cbx-header`,
-                      checked: isAllSelected,
-                      onChange: toggleAllRows,
-                      children: selectedRows.length > 1 && (
-                        <div className="metrics-dropdown">
-                          <button
-                            className="metrics-btn no-bg"
-                            type="button"
-                            onClick={(event) => toggleDropdown("bulk", event)}
-                          >
-                            <ThreeDotsIcon />
-                          </button>
-
-                          <ul
-                            className={`dropdown-menu ${dropdownShownIndex === "bulk" ? "show" : ""}`}
-                          >
-                            {actionButtons.map((btn) => (
-                              <li key={btn.label}>
-                                <button
-                                  className="dropdown-item"
-                                  type="button"
-                                  onClick={() => handleBulkAction(btn)}
-                                >
-                                  {btn.label}
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ),
-                    })}
-
-                  <span>{column.label}</span>
+                  <span>{idColumnDef.label}</span>
                   {sorting && (
-                    <SortIcon active={sortKey === column.key} asc={sortAsc} />
+                    <SortIcon active={sortKey === idColumnDef.key} asc={sortAsc} />
                   )}
                 </div>
               </th>
-            ))}
-          </tr>
-        </thead>
 
-        <tbody>
-          {pagedData.length > 0 ? (
-            pagedData.map((row, rowIndex) => (
-              <tr
-                key={row.id ?? rowIndex}
-                className={
-                  activeRowIndex === rowIndex || selectedRows.includes(row)
-                    ? "dynamic-row"
-                    : ""
-                }
-              >
-                {columns.map((column) => (
-                  <td key={`${rowIndex}-${column.key}`}>
-                    {renderTableCell(row, column, rowIndex)}
+              {tableColumns.map((column) => (
+                <th
+                  key={column.key}
+                  onClick={() => sorting && handleSortBy(column.key)}
+                 
+                  style={{ cursor: sorting ? "pointer" : "default" }}
+                  
+                >
+                  <div className="sorting-group">
+                    <span>{column.label}</span>
+                    {sorting && (
+                      <SortIcon active={sortKey === column.key} asc={sortAsc} />
+                    )}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody>
+            {pagedData.length > 0 ? (
+              pagedData.map((row, rowIndex) => (
+                <tr
+                  key={row.id ?? rowIndex}
+                  className={
+                    activeRowIndex === rowIndex || selectedRows.includes(row)
+                      ? "dynamic-row"
+                      : ""
+                  }
+                >
+                  <td className="checkbox-col">
+                    {renderCheckbox({
+                      id: `${internalIdPrefix}-cbx-${rowIndex}`,
+                      checked: selectedRows.includes(row),
+                      onChange: (checked) => toggleSelectRow(row, checked),
+                    })}
                   </td>
-                ))}
+
+                  <td className="id-col">
+                    {renderTableCell(row, idColumnDef, rowIndex)}
+                  </td>
+
+                  {tableColumns.map((column) => (
+                    <td key={`${rowIndex}-${column.key}`}>
+                      {renderTableCell(row, column, rowIndex)}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={totalTableColumns} className="text-center py-3">
+                  No records found.
+                </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={columns.length || 1} className="text-center py-3">
-                No records found.
-              </td>
-            </tr>
+            )}
+          </tbody>
+
+          {paginated && (
+            <tfoot>
+              <tr>
+                <td>
+                  <div className="metrics-btn-group">
+                    <select
+                      className="metrics-select"
+                      value={currentPageSize}
+                      onChange={(e) => setCurrentPageSize(Number(e.target.value))}
+                    >
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={30}>30</option>
+                    </select>
+                  </div>
+                </td>
+                <td colSpan={Math.max(totalTableColumns - 1, 1)}>
+                  <div className="pagination metrics-btn-group w-100 align-right">
+                    <button
+                      className="metrics-btn"
+                      type="button"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                      disabled={currentPage === 1}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        className="bi bi-chevron-left"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
+                        />
+                      </svg>
+                    </button>
+
+                    <span className="metrics-btn">
+                      Page {currentPage} of {totalPages}
+                    </span>
+
+                    <button
+                      className="metrics-btn"
+                      type="button"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                      }
+                      disabled={currentPage === totalPages}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        className="bi bi-chevron-right"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
           )}
-        </tbody>
-
-        {paginated && (
-          <tfoot>
-            <tr>
-              <td>
-                <div className="metrics-btn-group">
-                  <select
-                    className="metrics-select"
-                    value={currentPageSize}
-                    onChange={(e) => setCurrentPageSize(Number(e.target.value))}
-                  >
-                    <option value={10}>10</option>
-                    <option value={20}>20</option>
-                    <option value={30}>30</option>
-                  </select>
-                </div>
-              </td>
-              <td colSpan={Math.max(columns.length - 1, 1)}>
-                <div className="pagination metrics-btn-group w-100 align-right">
-                  <button
-                    className="metrics-btn"
-                    type="button"
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.max(prev - 1, 1))
-                    }
-                    disabled={currentPage === 1}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      className="bi bi-chevron-left"
-                      viewBox="0 0 16 16"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
-                      />
-                    </svg>
-                  </button>
-
-                  <span className="metrics-btn">
-                    Page {currentPage} of {totalPages}
-                  </span>
-
-                  <button
-                    className="metrics-btn"
-                    type="button"
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                    disabled={currentPage === totalPages}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      className="bi bi-chevron-right"
-                      viewBox="0 0 16 16"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tfoot>
-        )}
-      </table>
-    </div>
-  );
+        </table>
+      </div>
+    );
+  };
 
   const renderCard = (row, index, footerClass = "grid-card-footer") => {
     const progress = getRowProgress(row);

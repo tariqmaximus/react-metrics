@@ -13,7 +13,16 @@
   --md-text: #63634e;
   --md-text-muted: #888888;
   --md-heading: #212529;
-
+  /* Component tokens */
+  --md-primary: #0173df;
+  --md-success: #28a745;
+  --md-warning: #f1a10a;
+  --md-info: #17a2b8;
+  --md-danger: #dc3545;
+  --md-border: #e7e7e7;
+  --md-border-light: #e3e6ea;
+  --md-overlay: rgba(0, 0, 0, 0.5);
+  
   /* Status variables */
   --md-status-text: initial;
   --md-status-bg: initial;
@@ -60,13 +69,5 @@
   --font-size-base: var(--md-font-size-base);
   --font-size-sm: var(--md-font-size-sm);
 
-  /* Component tokens */
-  --md-primary: #0173df;
-  --md-success: #28a745;
-  --md-warning: #f1a10a;
-  --md-info: #17a2b8;
-  --md-danger: #dc3545;
-  --md-border: #e7e7e7;
-  --md-border-light: #e3e6ea;
-  --md-overlay: rgba(0, 0, 0, 0.5);
+
 }

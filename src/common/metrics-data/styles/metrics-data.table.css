@@ -5,10 +5,7 @@
   border-collapse: separate;
 }
 
-.metrics-data table td,
-.metrics-data table th {
-  min-width: 100px;
-}
+
 
 .metrics-data table .key {
   display: none;
@@ -49,7 +46,7 @@
 .metrics-data table thead th {
   font-weight: bold;
 
-  padding: 15px !important;
+  padding: var(--md-space-md, 15px) var(--md-space-base, 10px);
   text-transform: uppercase;
 }
 
@@ -69,8 +66,11 @@
   justify-content: flex-end;
 }
 
+
+
+
 .metrics-data table tr td {
-  padding: 15px;
+  padding: var(--md-space-md, 15px) var(--md-space-base, 10px);
   font-size: var(--font-size-base);
   border-top: 1px solid var(--md-border, #e7e7e7);
 }
@@ -101,9 +101,6 @@
   transform: rotate(90deg);
 }
 
-.metrics-data table tr.dynamic-row {
-  /* toggled via activeRowIndex */
-}
 
 .metrics-data table tfoot {
   border-top: 1px solid var(--md-border, #e7e7e7);

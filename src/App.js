@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import { MetricsData } from './common/metrics-data/lib';
 
@@ -6,11 +7,6 @@ const statusMap = {
     text: '#92400e',
     background: '#fef3c7',
     border: '#f59e0b',
-  },
-  'high priority': {
-    text: '#b91c1c',
-    background: '#fee2e2',
-    border: '#ef4444',
   },
   completed: {
     text: '#065f46',
@@ -22,7 +18,11 @@ const statusMap = {
     background: '#dbeafe',
     border: '#3b82f6',
   },
-  
+  failed: {
+    text: '#b91c1c',
+    background: '#fee2e2',
+    border: '#ef4444',
+  },
 };
 
 const theme = {
@@ -40,206 +40,167 @@ const theme = {
   cardRadius: '14px',
 };
 
-const dummyData = [
-  {
-    mediaTile: '',
-    name: 'Marketing Rebase',
-    source: 'Campaign Team',
-    status: 'completed',
-    progress: 92,
-    date: '2026-04-12',
-    priority: 'High',
-    description: 'Monthly campaign pipeline review.',
-  },
-  {
-    mediaTile: 'https://picsum.photos/80?random=2',
-    name: 'Sales Optimization',
-    source: 'Sales Team',
-    status: 'inprogress',
-    progress: 65,
-    date: '2026-04-10',
-    priority: 'Medium',
-    description: 'Improving sales funnel performance.',
-  },
-  {
-    mediaTile: 'https://picsum.photos/80?random=3',
-    name: 'UI Redesign',
-    source: 'Design Team',
-    status: 'pending',
-    progress: 30,
-    date: '2026-04-08',
-    priority: 'High',
-    description: 'Revamping dashboard interface.',
-  },
-  {
-    mediaTile: 'https://picsum.photos/80?random=4',
-    name: 'Backend Migration',
-    source: 'DevOps',
-    status: 'inprogress',
-    progress: 55,
-    date: '2026-04-15',
-    priority: 'Low',
-    description: 'Migrating services to new server.',
-  },
-  {
-    mediaTile: 'https://picsum.photos/80?random=5',
-    name: 'SEO Audit',
-    source: 'Marketing',
-    status: 'completed',
-    progress: 100,
-    date: '2026-04-05',
-    priority: 'Medium',
-    description: 'Website SEO performance review.',
-  },
-  {
-    mediaTile: 'https://picsum.photos/80?random=6',
-    name: 'Client Onboarding',
-    source: 'Support Team',
-    status: 'pending',
-    progress: 20,
-    date: '2026-04-18',
-    priority: 'High',
-    description: 'New client onboarding process.',
-  },
-  {
-    mediaTile: 'https://picsum.photos/80?random=7',
-    name: 'Mobile App Testing',
-    source: 'QA Team',
-    status: 'inprogress',
-    progress: 75,
-    date: '2026-04-11',
-    priority: 'Medium',
-    description: 'Testing mobile app features.',
-  },
-  {
-    mediaTile: 'https://picsum.photos/80?random=8',
-    name: 'Content Strategy',
-    source: 'Content Team',
-    status: 'completed',
-    progress: 88,
-    date: '2026-04-07',
-    priority: 'Low',
-    description: 'Planning blog and social content.',
-  },
-  {
-    mediaTile: 'https://picsum.photos/80?random=9',
-    name: 'Security Audit',
-    source: 'IT Team',
-    status: 'inprogress',
-    progress: 60,
-    date: '2026-04-20',
-    priority: 'High',
-    description: 'System security checks.',
-  },
-  {
-    mediaTile: 'https://picsum.photos/80?random=10',
-    name: 'Email Campaign',
-    source: 'Marketing',
-    status: 'completed',
-    progress: 95,
-    date: '2026-04-03',
-    priority: 'Medium',
-    description: 'Launching email marketing campaign.',
-  },
-  
-];
-
 function App() {
+  const [metricsData, setMetricsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    const fetchMetricsData = async () => {
+      try {
+        setLoading(true);
+        setErrorMessage('');
+
+        const response = await fetch('https://dummyjson.com/products?limit=100');
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch metrics data');
+        }
+
+        const result = await response.json();
+
+        const normalizedData = result.products.map((item) => {
+          const progress = Math.min(Math.round(item.rating * 20), 100);
+
+          let status = 'pending';
+
+          if (item.stock <= 10) {
+            status = 'failed';
+          } else if (item.rating >= 4.6) {
+            status = 'completed';
+          } else if (item.rating >= 4) {
+            status = 'inprogress';
+          }
+
+          return {
+            id: item.id,
+            mediaTile: item.thumbnail,
+            name: item.title,
+            source: item.brand || item.category,
+            status,
+            progress,
+            date: item.meta?.createdAt
+              ? item.meta.createdAt.slice(0, 10)
+              : '2026-05-18',
+            priority: item.stock <= 10 ? 'High' : item.stock <= 30 ? 'Medium' : 'Low',
+            category: item.category,
+            amount: item.price,
+            claims: item.stock,
+            description: item.description,
+          };
+        });
+
+        setMetricsData(normalizedData);
+      } catch (error) {
+        setErrorMessage(error.message || 'Something went wrong');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMetricsData();
+  }, []);
+
+  const footerComponent = useMemo(() => {
+    if (loading) return <div className="metrics-tag">Loading data...</div>;
+    if (errorMessage) return <div className="metrics-tag">Error: {errorMessage}</div>;
+
+    return <div className="metrics-tag">Total Records: {metricsData.length}</div>;
+  }, [loading, errorMessage, metricsData.length]);
+
   return (
-    <>
-      <MetricsData
+    <MetricsData
       mediaDetailsKeys={['name', 'date']}
-        title="Metrics Data Component"
-        icon="bi bi-bar-chart"
-        theme={theme}
-        statusMap={statusMap}
-        progressBy="completed"
-        headerButtons={[
+      title="Metrics Data Component"
+      icon="bi bi-bar-chart"
+      theme={theme}
+      statusMap={statusMap}
+      progressBy="completed"
+      headerButtons={[
+        {
+          label: 'Add New',
+          icon: 'bi bi-plus-lg',
+          tooltip: 'Add new item',
+          action: () => alert('Add new item'),
+        },
+      ]}
+      data={metricsData}
+      filterBy="status"
+      filterStyle={['tabs', 'keyword', 'dropdown', 'date']}
+      showViewTypes={[
+        {
+          view: 'table',
+          icon: 'bi bi-table',
+          tooltip: 'Table view',
+        },
+        {
+          view: 'grid',
+          icon: 'bi bi-card-list',
+          tooltip: 'Card view',
+        },
+        {
+          view: 'pipeline',
+          icon: 'bi bi-kanban',
+          tooltip: 'Pipeline view',
+        },
+      ]}
+      showKpis={[
+        { icon: 'bi bi-check-circle', card: 'completed' },
+        { icon: 'bi bi-hourglass-split', card: 'pending' },
+        { icon: 'bi bi-arrow-repeat', card: 'inprogress' },
+        { icon: 'bi bi-x-circle', card: 'failed' },
+      ]}
+      paginated
+      showFooter
+      footerComponent={footerComponent}
+      pageSize={5}
+      customFilter={{
+        title: 'Custom Filter',
+        button: {
+          icon: 'bi bi-gear',
+          tooltip: 'Open Custom Filter',
+        },
+        fields: [
           {
-            label: 'Add New',
-            icon: 'bi bi-plus-lg',
-            tooltip: 'Add new item',
-            action: () => alert('Add new item'),
-          },
-        ]}
-        data={dummyData}
-        filterBy="status"
-        filterStyle={['tabs', 'keyword', 'dropdown', 'date']}
-        showViewTypes={[
-          {
-            view: 'table',
-            icon: 'bi bi-table',
-            tooltip: 'Table view',
-          },
-          {
-            view: 'grid',
-            icon: 'bi bi-card-list',
-            tooltip: 'Card view',
-          },
-          {
-            view: 'pipeline',
-            icon: 'bi bi-kanban',
-            tooltip: 'Pipeline view',
-          },
-        ]}
-        showKpis={[
-          { icon: 'bi bi-check-circle', card: 'completed' },
-          { icon: 'bi bi-hourglass-split', card: 'pending' },
-          { icon: 'bi bi-arrow-repeat', card: 'inprogress' },
-          { icon: 'bi bi-graph-up', card: 'marketing' },
-          { icon: 'bi bi-graph-down', card: 'high Priority' },
-        ]}
-        paginated
-        showFooter
-        pageSize={5}
-        customFilter={{
-          title: 'Custom Filter',
-          button: {
-            icon: 'bi bi-gear',
-            tooltip: 'Open Custom Filter',
-          },
-          fields: [
-            {
-              key: 'status',
-              label: 'Status',
-              type: 'checkbox',
-            },
-            {
-              key: 'source',
-              label: 'Source',
-              type: 'radio',
-            },
-            {
-              key: 'priority',
-              label: 'Priority',
-              type: 'select',
-              options: ['High', 'Medium', 'Low'],
-            },
-            {
-              key: 'date',
-              label: 'Date',
-              type: 'date',
-            },
-          ],
-          onApply: (filters) => console.log('Custom filter applied', filters),
-          onReset: (filters) => console.log('Custom filter reset', filters),
-        }}
-        actionButtons={[
-          {
-            label: 'View',
-            tooltip: 'View detail',
-            action: row => alert(`View item: ${row.name}`),
+            key: 'status',
+            label: 'Status',
+            type: 'checkbox',
           },
           {
-            label: 'More',
-            tooltip: 'More actions',
-            isDropdown: true,
-            options: ['Edit', 'Delete'],
-            dropdownAction: (option, row) => alert(`${option} ${row.name}`),
+            key: 'source',
+            label: 'Source',
+            type: 'radio',
           },
-        ]}
-      />
-    </>
+          {
+            key: 'priority',
+            label: 'Priority',
+            type: 'select',
+            options: ['High', 'Medium', 'Low'],
+          },
+          {
+            key: 'date',
+            label: 'Date',
+            type: 'date',
+          },
+        ],
+        onApply: (filters) => console.log('Custom filter applied', filters),
+        onReset: (filters) => console.log('Custom filter reset', filters),
+      }}
+      actionButtons={[
+        {
+          label: 'View',
+          tooltip: 'View detail',
+          action: row => alert(`View item: ${row.name}`),
+        },
+        {
+          label: 'More',
+          tooltip: 'More actions',
+          isDropdown: true,
+          options: ['Edit', 'Delete'],
+          dropdownAction: (option, row) => alert(`${option} ${row.name}`),
+        },
+      ]}
+    />
   );
 }
 

@@ -1048,7 +1048,7 @@ export default function MetricsData(props) {
         <table>
           <thead>
             <tr>
-              <th className="checkbox-col" >
+              <th  >
                 <div className="metrics-group justify-center">
                   {renderCheckbox({
                     id: `${internalIdPrefix}-cbx-header`,
@@ -1129,7 +1129,7 @@ export default function MetricsData(props) {
                       : ""
                   }
                 >
-                  <td className="checkbox-col">
+                  <td >
                     {renderCheckbox({
                       id: `${internalIdPrefix}-cbx-${rowIndex}`,
                       checked: selectedRows.includes(row),

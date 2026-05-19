@@ -197,7 +197,7 @@
 }
 
 .metrics-data .metrics-tabs .nav-item .nav-link {
-  padding: var(--md-space-md, 15px) var(--md-space-base, 10px);
+  padding: var(--md-space-base, 10px) var(--md-space-base, 10px);
   color: var(--md-text-muted, #888888);
   text-transform: capitalize;
   background-color: var(--md-surface, #ffffff);

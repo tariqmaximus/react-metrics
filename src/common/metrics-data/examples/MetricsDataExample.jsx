@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import { MetricsData } from '../lib';
+import React, { useMemo, useState } from "react";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import { MetricsData } from "../lib";
 import {
   metricsDataMock,
   metricsColumns,
@@ -10,38 +10,40 @@ import {
   metricsTheme,
   metricsCustomFilter,
   emptyMetricsData,
-} from '../mock/metricsData.mock';
+} from "../mock/metricsData.mock";
 
 export default function MetricsDataExample() {
-  const [lastAction, setLastAction] = useState('No action yet');
+  const [lastAction, setLastAction] = useState("No action yet");
 
   const headerComponent = useMemo(
     () => <div className="metrics-tag">Demo Mode</div>,
-    []
+    [],
   );
 
   const footerComponent = useMemo(
     () => <div className="metrics-tag">Example footer content</div>,
-    []
+    [],
   );
 
   const handleRowAction = ({ action, row, rows }) => {
-    const label = action || 'unknown';
-    const target = row?.name || (Array.isArray(rows) ? `${rows.length} rows selected` : 'no row');
+    const label = action || "unknown";
+    const target =
+      row?.name ||
+      (Array.isArray(rows) ? `${rows.length} rows selected` : "no row");
     setLastAction(`${label} • ${target}`);
   };
 
   const sharedProps = {
     columns: metricsColumns,
-    filterBy: 'status',
-    filterStyle: ['tabs', 'dropdown', 'keyword', 'date'],
+    filterBy: "status",
+    filterStyle: ["tabs", "dropdown", "keyword", "date"],
     sorting: true,
     paginated: true,
     pageSize: 5,
     actionButtons: metricsActionButtons,
     headerButtons: metricsHeaderButtons,
-    showViewTypes: ['table', 'grid', 'pipeline'],
-    viewTypes: ['table', 'grid', 'pipeline'],
+    showViewTypes: ["table", "grid", "pipeline"],
+    viewTypes: ["table", "grid", "pipeline"],
     statusMap: metricsStatusMap,
     headerComponent,
     footerComponent,

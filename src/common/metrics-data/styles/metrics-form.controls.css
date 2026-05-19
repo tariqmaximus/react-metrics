@@ -2,10 +2,10 @@
 
 .metrics-fieldset {
   padding: 0;
-  border-radius: var(--md-radius, 8px);
+  border-radius: var(--md-radius, 5px);
   display: flex;
   flex-direction: column;
-  gap: var(--md-space-sm, 8px);
+  gap: var(--md-space-sm, 5px);
 }
 
 .metrics-fieldset.wrap {
@@ -18,7 +18,7 @@
 .radio-group {
   display: flex;
   flex-direction: column;
-  gap: var(--md-space-sm, 8px);
+  gap: var(--md-space-sm, 5px);
 }
 
 .metrics-checkbox,
@@ -32,7 +32,7 @@
 .metrics-radio .radio-label {
   user-select: none;
   display: flex;
-  gap: var(--md-space-sm, 8px);
+  gap: var(--md-space-sm, 5px);
   align-items: center;
   justify-content: flex-start;
   min-width: 55px;
@@ -108,8 +108,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
+  width: 5px;
+  height: 5px;
   fill: white;
   opacity: 0;
   transition: all 0.3s ease;
@@ -126,12 +126,12 @@
 .metrics-input {
   border: 1px solid var(--md-border, #e7e7e7);
   color: var(--md-text-muted, #888888);
-  padding: 0 var(--md-space-sm, 8px);
+  padding: 0 var(--md-space-sm, 5px);
   height: var(--md-input-height, 30px);
   outline: none;
   background-color: var(--md-surface, #ffffff);
   font-size: var(--md-font-size-base, 14px);
-  border-radius: var(--md-radius, 8px);
+  border-radius: var(--md-radius, 5px);
 }
 
 .metrics-btn:focus,
@@ -203,11 +203,12 @@
 
 .metrics-btn.no-bg {
   border: none !important;
+  background: none !important;
 }
 
 /* ─── Tags ─────────────────────────────────────────────────── */
 .metrics-tag {
-  border-radius: var(--md-radius, 8px);
+  border-radius: var(--md-radius, 5px);
   padding: 4px;
   font-size: var(--md-font-size-sm, 10px);
   background-color: var(--md-card-bg, #ffffff);

@@ -47,7 +47,6 @@
   font-size: var(--font-size-sm);
 }
 .metrics-data table thead th {
-
   font-weight: bold;
 
   padding: 15px !important;

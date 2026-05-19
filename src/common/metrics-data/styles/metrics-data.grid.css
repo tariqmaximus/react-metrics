@@ -1,7 +1,5 @@
 /* ─── GRID VIEW STYLES ─────────────────────────────────────── */
 
-
-
 .view-grid .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -13,10 +11,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-
 
 /* Responsive Grid */
 @media (max-width: 1024px) {
@@ -26,7 +29,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 765px) {
   .view-grid {
     padding: var(--md-space-sm);
   }

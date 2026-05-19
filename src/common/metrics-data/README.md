@@ -16,6 +16,8 @@ import { MetricsData } from 'metrics-data';
 
 `src/common/metrics-data`
 
+> Note: Do not install a separate `node_modules` inside `src/common/metrics-data/lib` while running the root app. A nested copy of `react` can cause invalid hook call errors.
+
 ## Folder structure
 
 ```
@@ -28,12 +30,15 @@ src/common/metrics-data
 ├── mock
 │   └── metricsData.mock.js
 ├── styles
-│   ├── metrics-data.css
+│   ├── metrics-data.component.css
+│   ├── metrics-data.variables.css
 │   ├── metrics-data.table.css
 │   ├── metrics-data.grid.css
 │   ├── metrics-data.pipeline.css
+│   ├── metrics-data.kpis.css
 │   ├── metrics-data.filter.css
-│   └── metrics-form.controls.css
+│   ├── metrics-form.controls.css
+│   └── metrics-status.css
 └── README.md
 ```
 
@@ -99,6 +104,38 @@ export default function App() {
 | `customFilter` | `Object` | Custom filter configuration object. |
 | `theme` | `Object` | Visual theme variables. |
 | `onRowAction` | `function` | Callback invoked when a row action is clicked. |
+
+## Custom Filter Fields
+
+When `customFilter.fields` is provided, the library renders an advanced filter panel using the field definitions you supply. Each field object supports the following shape:
+
+- `key` (string): unique field key used in the returned filter object.
+- `label` (string): human-friendly label displayed in the panel.
+- `type` (string): one of `text`, `number`, `date`, `select`, `radio`, `checkbox`.
+- `options` (string[]): for `select`, `radio`, or `checkbox` fields, an explicit list of options. If omitted, options are derived from the `data` prop.
+
+Behavior:
+- The `onApply` handler receives a filters object containing keys from `initialValues` and `fields` with their current values.
+- Use `initialValues` to prepopulate the custom filter panel.
+- If no `fields` are provided the component falls back to the legacy built-in filter sections (status/category/priority/location).
+
+Example `customFilter` (see `mock/metricsData.mock.js`):
+
+```js
+const metricsCustomFilter = {
+  title: 'Advanced record filter',
+  button: { label: 'Advanced Filter', icon: 'bi bi-funnel', className: 'primary' },
+  initialValues: { status: 'pending', category: 'Claims', minAmount: '' },
+  fields: [
+    { key: 'status', label: 'Status', type: 'select', options: ['pending','completed','failed'] },
+    { key: 'category', label: 'Category', type: 'select' },
+    { key: 'minAmount', label: 'Min Amount', type: 'number' },
+    { key: 'date', label: 'Date', type: 'date' },
+  ],
+};
+```
+
+This will render a compact, accessible advanced filter UI and return the selected filter values to your `onApply` callback.
 
 ## StatusMap example
 
@@ -176,11 +213,14 @@ npm publish --access restricted
 - `react` and `react-dom` are required peer dependencies.
 - `bootstrap-icons` is required for icon support.
 - CSS is split into separate files for component layout and view modes:
-  - `metrics-data.css`
+  - `metrics-data.component.css`
+  - `metrics-data.variables.css`
   - `metrics-data.table.css`
   - `metrics-data.grid.css`
   - `metrics-data.pipeline.css`
+  - `metrics-data.kpis.css`
   - `metrics-data.filter.css`
+  - `metrics-status.css`
   - `metrics-form.controls.css`
 - Verify table, grid, and pipeline views before publishing.
 

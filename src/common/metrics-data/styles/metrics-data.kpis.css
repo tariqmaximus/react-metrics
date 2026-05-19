@@ -1,8 +1,6 @@
 .metrics-kpis {
   display: flex;
-align-items: center;
- 
-
+  align-items: center;
 }
 
 .metrics-kpis-wrapper {
@@ -19,8 +17,10 @@ align-items: center;
 
   background-color: var(--md-card-bg, #ffffff);
   color: var(--md-text, #111827);
-  box-shadow: var(--md-card-shadow, 0 2px 8px rgba(0, 0, 0, 0.04));
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: var(--md-card-shadow, 0 2px 5px rgba(0, 0, 0, 0.04));
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .metrics-kpi-card:hover {
@@ -35,7 +35,7 @@ align-items: center;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: var(--md-space-sm, 8px);
+  gap: var(--md-space-sm, 5px);
 }
 
 .metrics-kpi-icon-wrapper {
@@ -47,16 +47,15 @@ align-items: center;
   border-radius: var(--md-radius, 10px);
   background-color: var(--md-status-bg, rgba(15, 23, 42, 0.06));
   color: var(--md-status-text, var(--md-text, #111827));
-
 }
 
 .metrics-kpi-icon {
   font-size: 14px;
 }
 .metrics-kpi-footer {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
 }
 .metrics-kpi-change {
   position: absolute;
@@ -79,7 +78,7 @@ align-items: center;
 }
 
 .metrics-kpi-content {
-  padding-top: var(--md-space-sm, 8px);
+  padding-top: var(--md-space-sm, 5px);
   max-width: 220px;
 }
 
@@ -106,7 +105,6 @@ align-items: center;
 }
 
 .metrics-kpi-chart {
-
   width: 92px;
   height: 56px;
   pointer-events: none;

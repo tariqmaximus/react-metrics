@@ -23,7 +23,7 @@
   padding: 0;
   min-height: 550px;
   border: 1px solid var(--md-border, #e8e8e8);
-  box-shadow: var(--md-card-shadow, 0 2px 8px rgba(0, 0, 0, 0.04));
+  box-shadow: var(--md-card-shadow, 0 2px 5px rgba(0, 0, 0, 0.04));
   transition: all 0.3s ease;
 }
 .metrics-headers {
@@ -32,11 +32,10 @@
   justify-content: space-between;
   padding: 16px;
   background-color: var(--md-header-bg, #ffffff);
- padding: 0 16px;
+  padding: 0 16px;
   border-bottom: 1px solid var(--md-border-light, #e0e0e0);
   transition: all 0.3s ease;
 }
-
 
 .metrics-headers h3 {
   font-size: var(--font-size-base);
@@ -45,10 +44,9 @@
   text-transform: capitalize;
 }
 .pipeline-body {
-  
   padding: 16px;
   gap: 16px;
- 
+
   display: flex;
   flex-direction: column;
 }
@@ -72,7 +70,6 @@
   gap: 12px;
 }
 .pipeline-progress {
-
   align-items: center;
   margin: 25px 0;
   font-size: var(--font-size-base);

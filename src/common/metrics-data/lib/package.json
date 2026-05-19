@@ -1,13 +1,25 @@
 {
-  "name": "metrics-data-table",
+  "name": "metrics-data",
   "version": "1.0.0",
   "description": "Reusable React metrics data table with table, grid and pipeline views",
-  "main": "dist/metrics-data-table.umd.js",
-  "module": "dist/metrics-data-table.es.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/metrics-data.umd.js",
+  "module": "dist/metrics-data.es.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/metrics-data.es.js",
+      "require": "./dist/metrics-data.umd.js",
+      "types": "./index.d.ts"
+    }
+  },
   "files": [
-    "dist"
+    "dist",
+    "index.d.ts",
+    "MetricsData.d.ts"
   ],
+  "publishConfig": {
+    "access": "restricted"
+  },
   "scripts": {
     "build": "vite build",
     "prepublishOnly": "npm run build"
@@ -20,13 +32,14 @@
     "bootstrap-icons": "^1.11.3"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^latest",
-    "vite": "^latest"
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.1"
   },
   "keywords": [
     "react",
     "table",
     "metrics",
+    "metrics-data",
     "data-grid",
     "pipeline"
   ],

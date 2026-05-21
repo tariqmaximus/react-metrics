@@ -111,6 +111,11 @@ function App() {
   }, [loading, errorMessage, metricsData.length]);
 
   return (
+    <div className='container-fluit'>
+       <h3 style={{ margin: '16px 0' }}>Metrics Data Component Demo</h3>
+       <p style={{ marginBottom: 24 }}></p>
+       <section style={{ marginBottom: 48 }}>
+        
     <MetricsData
       mediaDetailsKeys={['name', 'date']}
       title="Metrics Data Component"
@@ -203,6 +208,8 @@ function App() {
         },
       ]}
     />
+    </section>
+    </div>
   );
 }
 

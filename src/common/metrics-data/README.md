@@ -1,15 +1,15 @@
-# metrics-data
+# metrics-data-table
 
 A reusable React metrics data library built for table, grid, and pipeline reporting scenarios. The package is designed for healthcare, revenue cycle management (RCM), claim operations, and EHR dashboards.
 
 ## Package name
 
-`metrics-data`
+`metrics-data-table`
 
 ## Consumer import
 
 ```js
-import { MetricsData } from 'metrics-data';
+import { MetricsData } from 'metrics-data-table';
 ```
 
 ## Local development path
@@ -45,38 +45,69 @@ src/common/metrics-data
 ## Installation
 
 ```bash
-npm install metrics-data
+npm install metrics-data-table
 npm install bootstrap-icons
 ```
 
 ## Usage example
 
 ```jsx
-import React from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { MetricsData } from 'metrics-data';
+import { MetricsData } from 'metrics-data-table';
 
 export default function App() {
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    async function loadMetrics() {
+      setLoading(true);
+      setError('');
+
+      try {
+        const response = await fetch('/api/metrics');
+        if (!response.ok) {
+          throw new Error('Failed to load metrics data');
+        }
+
+        const json = await response.json();
+        setRows(Array.isArray(json) ? json : json.data || []);
+      } catch (err) {
+        setError(err.message || 'Unexpected error');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadMetrics();
+  }, []);
+
+  const footerComponent = useMemo(() => {
+    if (loading) return <div className="metrics-tag">Loading data...</div>;
+    if (error) return <div className="metrics-tag">Error: {error}</div>;
+    return <div className="metrics-tag">Total records: {rows.length}</div>;
+  }, [loading, error, rows.length]);
+
   return (
     <MetricsData
-      data={data}
+      data={rows}
       columns={columns}
       filterBy="status"
       filterStyle={['tabs', 'dropdown', 'keyword', 'date']}
       sorting
       paginated
       pageSize={10}
-      showActions
+      showViewTypes={['table', 'grid', 'pipeline']}
+      viewTypes={['table', 'grid', 'pipeline']}
       actionButtons={actionButtons}
       headerButtons={headerButtons}
-      showViewTypes
-      viewTypes={['table', 'grid', 'pipeline']}
       statusMap={statusMap}
-      headerComponent={<div className="metrics-tag">Live Dashboard</div>}
-      footerComponent={<div className="metrics-tag">Footer content</div>}
-      customFilter={customFilter}
       theme={theme}
-      onRowAction={({ action, row }) => console.log(action, row)}
+      footerComponent={footerComponent}
+      customFilter={customFilter}
+      onRowAction={({ action, row, rows }) => console.log(action, row || rows)}
     />
   );
 }

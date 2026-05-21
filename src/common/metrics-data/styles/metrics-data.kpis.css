@@ -5,7 +5,15 @@
 
 .metrics-kpis-wrapper {
   display: contents;
+  width: 100%;
+
 }
+  @media (max-width: 1024px) {
+    .metrics-kpis-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+  }
 
 .metrics-kpi-card {
   position: relative;

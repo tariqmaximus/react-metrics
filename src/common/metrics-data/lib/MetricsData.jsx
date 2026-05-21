@@ -1167,19 +1167,36 @@ export default function MetricsData(props) {
                 </div>
                 <div colSpan={Math.max(totalTableColumns - 1, 1)}>
                   <div className="pagination metrics-btn-group w-100 align-right">
-                    {totalPages > 1 && (
-                      <select
-                        className="metrics-select"
-                        value={currentPage}
-                        onChange={(e) => setCurrentPage(Number(e.target.value))}
+                    <div className="metrics-dropdown metrics-btn">
+                      <button
+                        className="metrics-btn no-bg metrics-btn-toggle"
+                        type="button"
+                        title={`Items per page: ${currentPageSize}`}
+                        onClick={(event) => toggleDropdown("pagination", event)}
                       >
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                          <option key={page} value={page}>
-                            {page}
-                          </option>
+                        Items per page: {currentPageSize}
+                      </button>
+
+                      <ul
+                        className={`dropdown-menu ${dropdownShownIndex === "pagination" ? "show" : ""}`}
+                      >
+                        {Array.from(new Set([pageSize, 10, 20, 50, 100])).sort((a, b) => a - b).map((size) => (
+                          <li key={size}>
+                            <button
+                              type="button"
+                              className="dropdown-item"
+                              onClick={() => {
+                                setCurrentPageSize(size);
+                                setCurrentPage(1);
+                                setDropdownShownIndex(null);
+                              }}
+                            >
+                              {size}
+                            </button>
+                          </li>
                         ))}
-                      </select>
-                    )}
+                      </ul>
+                    </div>
                     <button
                       className="metrics-btn"
                       type="button"
@@ -1501,7 +1518,7 @@ export default function MetricsData(props) {
         </div>
       )}
       <div
-        className={`metrics-data generic-font-size ${variant} ${isCollapsed ? "collapsed" : ""}`.trim()}
+        className={`metrics-data responsive  generic-font-size ${variant} ${isCollapsed ? "collapsed" : ""}`.trim()}
         style={{
           "--md-bg": theme.background || "#ffffff",
           "--md-surface": theme.surface || "#ffffff",

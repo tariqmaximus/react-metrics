@@ -1,5 +1,5 @@
 {
-  "name": "metrics-data",
+  "name": "metrics-data-table",
   "version": "1.0.0",
   "description": "Reusable React metrics data table with table, grid and pipeline views",
   "main": "dist/metrics-data.umd.js",

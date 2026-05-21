@@ -440,7 +440,9 @@
   .metrics-data.responsive table .media-tile {
     width: 100%;
   }
-
+.metrics-header {
+  display: none;
+}
   .metrics-data.responsive table .mobile-btn {
     display: flex;
   }

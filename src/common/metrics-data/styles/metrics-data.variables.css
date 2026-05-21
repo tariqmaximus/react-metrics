@@ -22,7 +22,7 @@
   --md-border: #e7e7e7;
   --md-border-light: #e3e6ea;
   --md-overlay: rgba(0, 0, 0, 0.5);
-  
+ 
   /* Status variables */
   --md-status-text: initial;
   --md-status-bg: initial;
@@ -41,11 +41,11 @@
   --md-card-radius: 10px;
 
   /* Shadows */
-  --md-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
-  --md-card-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
-  --md-card-hover-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
-  --md-date-shadow: 0 24px 60px rgba(28, 41, 70, 0.12);
-  --md-focus-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+
+  --md-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+
+
 
   /* Typography */
   --md-font-size-sm: 10px;

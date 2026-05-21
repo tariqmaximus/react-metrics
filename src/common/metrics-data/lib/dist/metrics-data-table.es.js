@@ -1866,7 +1866,7 @@ function qs(k) {
           "--md-radius": v.radius || "5px",
           "--md-card-radius": v.cardRadius || "10px",
           "--md-shadow": v.shadow || "0 0px 16px rgba(0, 0, 0, 0.1)",
-          "--md-card-shadow": v.cardShadow || "0 2px 5px rgba(0, 0, 0, 0.04)",
+          "--md-shadow": v.cardShadow || "0 0 10px rgba(0, 0, 0, 0.3)",
           "--md-card-hover-shadow": v.cardHoverShadow || "0 12px 32px rgba(0, 0, 0, 0.12)",
           ...v.variables
         },

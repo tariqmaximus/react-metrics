@@ -198,7 +198,7 @@ export default function MetricsData(props) {
     searchKey = "name",
     headerComponent = null,
     footerComponent = null,
-    onRowAction = () => {},
+    onRowAction = () => { },
     customFilter = null,
   } = props;
 
@@ -216,13 +216,13 @@ export default function MetricsData(props) {
         item.value !== undefined
           ? item.value
           : data.filter((row) =>
-              Object.values(row || {}).some(
-                (value) =>
-                  String(value || "")
-                    .toLowerCase()
-                    .trim() === cardKey,
-              ),
-            ).length;
+            Object.values(row || {}).some(
+              (value) =>
+                String(value || "")
+                  .toLowerCase()
+                  .trim() === cardKey,
+            ),
+          ).length;
       const change = item.change;
       const changeClass =
         typeof change === "string" && change.trim().startsWith("-")
@@ -412,35 +412,35 @@ export default function MetricsData(props) {
           !customFilter?.fields || !Array.isArray(customFilter.fields)
             ? true
             : customFilter.fields.every((field) => {
-                const filterValue = customFilterValues?.[field.key];
-                if (
-                  filterValue === undefined ||
-                  filterValue === null ||
-                  filterValue === ""
-                )
-                  return true;
+              const filterValue = customFilterValues?.[field.key];
+              if (
+                filterValue === undefined ||
+                filterValue === null ||
+                filterValue === ""
+              )
+                return true;
 
-                const rowValue = item?.[field.key];
-                if (field.type === "date") {
-                  return (
-                    rowValue &&
-                    new Date(rowValue).toDateString() ===
-                      new Date(filterValue).toDateString()
-                  );
-                }
+              const rowValue = item?.[field.key];
+              if (field.type === "date") {
+                return (
+                  rowValue &&
+                  new Date(rowValue).toDateString() ===
+                  new Date(filterValue).toDateString()
+                );
+              }
 
-                if (field.type === "number") {
-                  return Number(rowValue) === Number(filterValue);
-                }
+              if (field.type === "number") {
+                return Number(rowValue) === Number(filterValue);
+              }
 
-                if (field.type === "select") {
-                  return String(rowValue) === String(filterValue);
-                }
+              if (field.type === "select") {
+                return String(rowValue) === String(filterValue);
+              }
 
-                return String(rowValue || "")
-                  .toLowerCase()
-                  .includes(String(filterValue || "").toLowerCase());
-              });
+              return String(rowValue || "")
+                .toLowerCase()
+                .includes(String(filterValue || "").toLowerCase());
+            });
 
         return keywordMatch && optionMatch && dateMatch && customFilterMatch;
       })
@@ -474,9 +474,9 @@ export default function MetricsData(props) {
 
   const pagedData = paginated
     ? filteredData.slice(
-        (currentPage - 1) * currentPageSize,
-        currentPage * currentPageSize,
-      )
+      (currentPage - 1) * currentPageSize,
+      currentPage * currentPageSize,
+    )
     : filteredData;
 
   const viewButtons = useMemo(() => {
@@ -1089,7 +1089,7 @@ export default function MetricsData(props) {
                 className=""
                 onClick={() => sorting && handleSortBy(idColumnDef.key)}
                 style={{ cursor: sorting ? "pointer" : "default" }}
-                
+
               >
                 <div className="sorting-group">
                   <span>{idColumnDef.label}</span>
@@ -1103,9 +1103,9 @@ export default function MetricsData(props) {
                 <th
                   key={column.key}
                   onClick={() => sorting && handleSortBy(column.key)}
-                 
+
                   style={{ cursor: sorting ? "pointer" : "default" }}
-                  
+
                 >
                   <div className="sorting-group">
                     <span>{column.label}</span>
@@ -1157,35 +1157,37 @@ export default function MetricsData(props) {
             )}
           </tbody>
 
-          {paginated && (
-            <tfoot>
-              <tr>
-                <td>
-                 {footerComponent}
-                </td>
-                <td colSpan={Math.max(totalTableColumns - 1, 1)}>
+        
+        </table>
+        
+            {paginated && (
+            <div className="metrics-footer">
+                <div>
+                  {footerComponent}
+                </div>
+                <div colSpan={Math.max(totalTableColumns - 1, 1)}>
                   <div className="pagination metrics-btn-group w-100 align-right">
-                     {totalPages > 1 && (
-      <select
-        className="metrics-select"
-        value={currentPage}
-        onChange={(e) => setCurrentPage(Number(e.target.value))}
-      >
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-          <option key={page} value={page}>
-            {page}
-          </option>
-        ))}
-      </select>
-    )}
-                     <button
-      className="metrics-btn"
-      type="button"
-      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-      disabled={currentPage === 1}
-    >
-          
-                            <svg
+                    {totalPages > 1 && (
+                      <select
+                        className="metrics-select"
+                        value={currentPage}
+                        onChange={(e) => setCurrentPage(Number(e.target.value))}
+                      >
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                          <option key={page} value={page}>
+                            {page}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                    <button
+                      className="metrics-btn"
+                      type="button"
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                    >
+
+                      <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
                         height="16"
@@ -1198,17 +1200,17 @@ export default function MetricsData(props) {
                           d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
                         />
                       </svg>
-    </button>
+                    </button>
 
-    
 
-    <button
-      className="metrics-btn"
-      type="button"
-      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-      disabled={currentPage === totalPages}
-    >
-<svg xmlns="http://www.w3.org/2000/svg"
+
+                    <button
+                      className="metrics-btn"
+                      type="button"
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg"
                         width="16"
                         height="16"
                         fill="currentColor"
@@ -1219,18 +1221,17 @@ export default function MetricsData(props) {
                           fillRule="evenodd"
                           d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"
                         />
-                        </svg>
-    </button>
+                      </svg>
+                    </button>
 
-    {/* Optional: Dropdown for jumping to page */}
-   
+                    {/* Optional: Dropdown for jumping to page */}
+
                   </div>
-                </td>
-              </tr>
-            </tfoot>
+                </div>
+         </div>
           )}
-        </table>
-      </div>
+        </div>
+    
     );
   };
 
@@ -1348,8 +1349,8 @@ export default function MetricsData(props) {
       searchOptions.length > 0
         ? searchOptions
         : Array.from(
-            new Set(filteredData.map((row) => row.status).filter(Boolean)),
-          );
+          new Set(filteredData.map((row) => row.status).filter(Boolean)),
+        );
 
     return (
       <div className="pipeline-container">
@@ -1529,8 +1530,8 @@ export default function MetricsData(props) {
           "--md-card-radius": theme.cardRadius || "10px",
 
           "--md-shadow": theme.shadow || "0 0px 16px rgba(0, 0, 0, 0.1)",
-          "--md-card-shadow":
-            theme.cardShadow || "0 2px 5px rgba(0, 0, 0, 0.04)",
+          "--md-shadow":
+            theme.cardShadow || "0 0 10px rgba(0, 0, 0, 0.3)",
           "--md-card-hover-shadow":
             theme.cardHoverShadow || "0 12px 32px rgba(0, 0, 0, 0.12)",
 
@@ -1737,9 +1738,7 @@ export default function MetricsData(props) {
           {renderCurrentTemplate()}
         </div>
 
-        {showFooter && footerComponent && (
-          <div className="metrics-footer">{footerComponent}</div>
-        )}
+      
 
         {customFilter && customFilterOpen && (
           <div

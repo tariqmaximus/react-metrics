@@ -284,7 +284,7 @@
   background-color: var(--md-card-bg, #ffffff);
   border: 1px solid var(--md-border-light, #e3e6ea);
   border-radius: var(--md-card-radius, 15px);
-  box-shadow: var(--md-date-shadow, 0 24px 60px rgba(28, 41, 70, 0.12));
+  box-shadow: var(--md-shadow, 0 24px 60px rgba(28, 41, 70, 0.12));
 }
 
 .metrics-data .date-picker .d-grid {
@@ -371,16 +371,17 @@
 .metrics-data .metrics-dropdown .dropdown-menu {
   position: absolute;
   bottom: 100%;
-  left: 0;
+  right: 0;
   z-index: 10;
   background-color: var(--md-surface, #ffffff);
   border: 1px solid var(--md-border, #e7e7e7);
   border-radius: 5px;
   min-width: 140px;
+  box-shadow: var(--md-shadow);
   padding: 0;
   margin: 0;
   list-style: none;
-  box-shadow: var(--shadow-card);
+
   transition:
     opacity 0.2s ease,
     transform 0.2s ease;
@@ -403,7 +404,7 @@
 .metrics-data .metrics-dropdown .dropdown-menu li .dropdown-item {
   display: block;
   width: 100%;
-  padding: 10px 15px;
+  padding:var(--md-space-base, 10px) var(--md-space-base, 10px);
   border: none;
   border-radius: 0;
   background: transparent;
@@ -425,7 +426,14 @@
 .metrics-data .metrics-dropdown .dropdown-menu li:last-child .dropdown-item {
   border-radius: 0 0 5px 5px;
 }
+.metrics-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--md-space-base, 10px);
+  border-bottom: 1px solid var(--md-border, #e7e7e7);
 
+}
 /* ─── Responsive ───────────────────────────────────────────── */
 
 @media (max-width: 1024px) {
